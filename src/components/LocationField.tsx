@@ -198,7 +198,7 @@ export function LocationField({ label, placeholder, value, onChange }: LocationF
             if (value) onChange({ ...value, state });
           }}
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full">
             <SelectValue placeholder={copy.onboarding.location.statePlaceholder} />
           </SelectTrigger>
           <SelectContent>
