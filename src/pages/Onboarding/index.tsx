@@ -1,27 +1,36 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { copy } from '@/constants/copy';
-import { useConfig } from '@/hooks/useConfig';
-import type { UserConfig } from '@/types/config';
-import { StepLocation } from './StepLocation';
-import { StepCommute } from './StepCommute';
-import { StepDays } from './StepDays';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { copy } from "@/constants/copy";
+import { useConfig } from "@/hooks/useConfig";
+import type { UserConfig } from "@/types/config";
+import { StepLocation } from "./StepLocation";
+import { StepCommute } from "./StepCommute";
+import { StepDays } from "./StepDays";
+import { cn } from "@/lib/utils";
 
 const TOTAL_STEPS = 3;
 
 const STEP_META = [
-  { title: copy.onboarding.location.title, subtitle: copy.onboarding.location.subtitle },
-  { title: copy.onboarding.commute.title, subtitle: copy.onboarding.commute.subtitle },
-  { title: copy.onboarding.days.title, subtitle: copy.onboarding.days.subtitle },
+  {
+    title: copy.onboarding.location.title,
+    subtitle: copy.onboarding.location.subtitle,
+  },
+  {
+    title: copy.onboarding.commute.title,
+    subtitle: copy.onboarding.commute.subtitle,
+  },
+  {
+    title: copy.onboarding.days.title,
+    subtitle: copy.onboarding.days.subtitle,
+  },
 ];
 
 const DEFAULT_DRAFT: Partial<UserConfig> = {
-  morningWindow: { start: '08:00', end: '09:00' },
-  eveningWindow: { start: '17:00', end: '18:00' },
+  morningWindow: { start: "08:00", end: "09:00" },
+  eveningWindow: { start: "17:00", end: "18:00" },
   officeDaysPerWeek: 3,
-  preferredDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+  preferredDays: ["monday", "tuesday", "wednesday", "thursday", "friday"],
   rainThreshold: 40,
 };
 
@@ -37,7 +46,9 @@ function isStepValid(step: number, draft: Partial<UserConfig>): boolean {
     case 2:
       return !!(draft.morningWindow?.start && draft.eveningWindow?.start);
     case 3:
-      return !!(draft.officeDaysPerWeek && (draft.preferredDays?.length ?? 0) > 0);
+      return !!(
+        draft.officeDaysPerWeek && (draft.preferredDays?.length ?? 0) > 0
+      );
     default:
       return false;
   }
@@ -79,7 +90,7 @@ export function Onboarding() {
       configVersion: 1,
     };
     setConfig(finalConfig);
-    navigate('/', { replace: true });
+    navigate("/", { replace: true });
   }
 
   const meta = STEP_META[step - 1];
@@ -94,16 +105,42 @@ export function Onboarding() {
             d="M8 22C5.24 22 3 19.76 3 17c0-2.42 1.72-4.44 4.03-4.9A7 7 0 0 1 14 6a6.97 6.97 0 0 1 6.8 5.4A5 5 0 0 1 26 16.5c0 3.04-2.46 5.5-5.5 5.5H8Z"
             className="fill-primary"
           />
-          <line x1="10" y1="25" x2="8"  y2="29" className="stroke-primary" strokeWidth="2" strokeLinecap="round" />
-          <line x1="16" y1="25" x2="14" y2="29" className="stroke-primary" strokeWidth="2" strokeLinecap="round" />
-          <line x1="22" y1="25" x2="20" y2="29" className="stroke-primary" strokeWidth="2" strokeLinecap="round" />
+          <line
+            x1="10"
+            y1="25"
+            x2="8"
+            y2="29"
+            className="stroke-primary"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+          <line
+            x1="16"
+            y1="25"
+            x2="14"
+            y2="29"
+            className="stroke-primary"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+          <line
+            x1="22"
+            y1="25"
+            x2="20"
+            y2="29"
+            className="stroke-primary"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </svg>
         <div className="leading-none">
           <p className="text-2xl font-bold tracking-tight">
             <span className="text-foreground">Elak</span>
             <span className="text-primary">Hujan</span>
           </p>
-          <p className="text-xs text-muted-foreground mt-1">Perancang hujan untuk rider</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Perancang hujan untuk rider
+          </p>
         </div>
       </div>
 
@@ -119,12 +156,12 @@ export function Onboarding() {
           <div
             key={i}
             className={cn(
-              'h-2 rounded-full transition-all duration-300',
+              "h-2 rounded-full transition-all duration-300",
               i + 1 === step
-                ? 'w-6 bg-primary'
+                ? "w-6 bg-primary"
                 : i + 1 < step
-                  ? 'w-2 bg-primary/50'
-                  : 'w-2 bg-muted-foreground/25',
+                  ? "w-2 bg-primary/50"
+                  : "w-2 bg-muted-foreground/25",
             )}
           />
         ))}
@@ -145,7 +182,7 @@ export function Onboarding() {
           </Button>
         )}
         <Button
-          className={step === 1 ? 'w-full' : 'flex-1'}
+          className={step === 1 ? "w-full" : "flex-1"}
           onClick={handleNext}
           disabled={!canAdvance}
         >
