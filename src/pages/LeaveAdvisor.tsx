@@ -5,7 +5,6 @@ import { RainBar } from '@/components/RainBar';
 import { useWeather } from '@/hooks/useWeather';
 import { useConfig } from '@/hooks/useConfig';
 import { getRecommendedLeaveTime, getRollingSlots } from '@/lib/leaveAdvisor';
-import { WarningAlert } from '@/components/WarningAlert';
 import { copy } from '@/constants/copy';
 import { cn } from '@/lib/utils';
 
@@ -58,9 +57,6 @@ export function LeaveAdvisor() {
 
   return (
     <div className="px-4 py-6 space-y-5">
-      {/* MET Malaysia warning banner */}
-      <WarningAlert />
-
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold flex items-center gap-2">
