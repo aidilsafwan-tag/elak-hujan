@@ -7,7 +7,7 @@ export function useWarnings(): { warnings: WeatherWarning[]; isLoading: boolean 
   const { config } = useConfig();
 
   const query = useQuery({
-    queryKey: ['warnings'],
+    queryKey: ['warnings', 'v2'],
     queryFn: fetchActiveWarnings,
     staleTime: WARNINGS_STALE_MS,
     enabled: !!config,
