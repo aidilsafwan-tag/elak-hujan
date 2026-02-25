@@ -8,7 +8,7 @@
 
 ## 1. Overview
 
-ElakHujan is a mobile-first React web app that helps scooter commuters in Malaysia plan their office days and commute timing around rain. It combines a weekly planning view with a daily leave-time advisor, personalised through a local configuration setup. All user preferences are stored in the browser's localStorage. A thin Vercel Edge Function proxy is used to forward MET Malaysia API requests server-side (to avoid CORS and keep the API token out of the browser), but no user data ever touches the server.
+ElakHujan is a mobile-first React web app that helps scooter commuters in Malaysia plan their office days and commute timing around rain. It combines a weekly planning view with a daily leave-time advisor, personalised through a local configuration setup. All user preferences are stored in the browser's localStorage. A thin Netlify Edge Function proxy is used to forward MET Malaysia API requests server-side (to avoid CORS and keep the API token out of the browser), but no user data ever touches the server.
 
 ---
 
@@ -109,9 +109,9 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 | Styling | Tailwind CSS + shadcn/ui | Clean, minimal, component-ready |
 | State / Storage | localStorage | No backend needed, shareable by design |
 | Primary weather API | Open-Meteo (free, no key required) | Hourly precipitation probability, no API key, covers Malaysia |
-| Daily forecast API | MET Malaysia API — api.met.gov.my (free with registration) | Official daily forecast (`FORECAST/GENERAL`, datatypes `FGM`/`FGA`/`FGN`); proxied via Vercel Edge Function to avoid CORS and keep token server-side |
+| Daily forecast API | MET Malaysia API — api.met.gov.my (free with registration) | Official daily forecast (`FORECAST/GENERAL`, datatypes `FGM`/`FGA`/`FGN`); proxied via Netlify Edge Function to avoid CORS and keep token server-side |
 | Warnings API | data.gov.my Weather API | Official source for active weather warnings, displayed as dismissible banner |
-| API proxy | Vercel Edge Function (`api/met/[...path].ts`) | Forwards MET API calls server-side; `MET_TOKEN` never reaches the browser |
+| API proxy | Netlify Edge Function (`netlify/edge-functions/met-proxy.ts`) | Forwards MET API calls server-side; `MET_TOKEN` never reaches the browser |
 | Location input | Nominatim (OpenStreetMap geocoding) | Free, no API key required |
 | Localisation | Bahasa Melayu (primary) | Local-first product, aligns with MET Malaysia data which is also in BM |
 
@@ -128,7 +128,7 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 
 **MET Malaysia API — api.met.gov.my (daily forecast):**
 - Fetch `FORECAST / GENERAL` datatypes (`FGM` morning, `FGA` afternoon, `FGN` night) for the user's office state location
-- Called via Vercel Edge Function proxy; token stored as server-side env var `MET_TOKEN`
+- Called via Netlify Edge Function proxy; token stored as server-side env var `MET_TOKEN`
 - State location list (`/locations?locationcategoryid=STATE`) cached 24 hours; today's forecast cached 5 minutes
 - Displayed as a supplementary "Ramalan MET Hari Ini" section in the LeaveAdvisor view
 - **Note:** `OBSERVATION / RAINS` radar nowcast datatypes require elevated API access beyond default registration; not implemented
@@ -187,7 +187,7 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 - Multi-city or multi-user shared dashboard
 - Historical rain pattern analysis
 - Integration with Google Calendar for office day confirmation
-- **Telegram notifications** — morning summary on confirmed office days (rain risk for both commute windows) and an evening nudge with the best leave time recommendation, delivered via a Vercel serverless function holding the bot token; each user stores only their own Chat ID locally
+- **Telegram notifications** — morning summary on confirmed office days (rain risk for both commute windows) and an evening nudge with the best leave time recommendation, delivered via a Netlify serverless function holding the bot token; each user stores only their own Chat ID locally
 - **User accounts & cloud sync** — allow users to sign in and have their config (locations, commute windows, preferences) synced across devices, rather than being tied to a single browser's localStorage
 - **Crowdsourced rain reports** — authenticated users could submit real-time "it's raining here" reports anchored to their coordinates, creating a community-sourced rain layer that complements the NWP model forecast (especially useful for the hyperlocal convective storms that global models miss)
 - **Crowdsourced alerts** — users could push or receive alerts from other riders on the same route or area (e.g. "jalan Ampang banjir sekarang"), building a peer-to-peer hazard layer on top of the forecast data

@@ -1,13 +1,13 @@
 # Deployment Guide
 
-This app deploys to **Vercel** as a static SPA with one Edge Function (`api/met/`) that proxies MET Malaysia API calls server-side.
+This app deploys to **Netlify** as a static SPA with one Edge Function (`netlify/edge-functions/met-proxy.ts`) that proxies MET Malaysia API calls server-side.
 
 ---
 
 ## Prerequisites
 
 - A GitHub account
-- A [Vercel](https://vercel.com) account (free tier is enough)
+- A [Netlify](https://netlify.com) account (free tier is enough)
 - A MET Malaysia API token — register at [api.met.gov.my](https://api.met.gov.my)
 
 ---
@@ -23,36 +23,33 @@ git push -u origin main
 
 ---
 
-## Step 2 — Import the project on Vercel
+## Step 2 — Import the project on Netlify
 
-1. Go to [vercel.com/new](https://vercel.com/new)
-2. Click **Add GitHub Account** (if not already connected) and authorise Vercel
-3. Find the `elak-hujan` repo and click **Import**
+1. Go to [app.netlify.com](https://app.netlify.com) and log in
+2. Click **Add new site → Import an existing project**
+3. Choose **GitHub** and authorise Netlify if prompted
+4. Find and select the `elak-hujan` repo
 
 ---
 
 ## Step 3 — Configure build settings
 
-Vercel will auto-detect the framework as **Vite**. The defaults are correct — no changes needed:
+Netlify will read `netlify.toml` automatically — no manual changes needed. Confirm the settings look like this before deploying:
 
 | Setting | Value |
 |---------|-------|
-| Framework Preset | Vite |
-| Build Command | `npm run build` |
-| Output Directory | `dist` |
-| Install Command | `npm install` |
+| Build command | `npm run build` |
+| Publish directory | `dist` |
 
 ---
 
 ## Step 4 — Add the MET Malaysia API token
 
-This is the only environment variable required.
-
-1. On the **Configure Project** screen, expand **Environment Variables**
+1. On the **Configure site** screen, expand **Environment variables**
 2. Add the following:
 
-| Name | Value |
-|------|-------|
+| Key | Value |
+|-----|-------|
 | `MET_TOKEN` | your token from api.met.gov.my |
 
 > **Important:** Do NOT prefix it with `VITE_`. It must stay server-side so it is never exposed in the browser.
@@ -61,14 +58,14 @@ This is the only environment variable required.
 
 ## Step 5 — Deploy
 
-Click **Deploy**. Vercel will:
+Click **Deploy site**. Netlify will:
 
 1. Install dependencies (`npm install`)
 2. Build the app (`tsc -b && vite build`)
 3. Deploy the `dist/` folder as a static site
-4. Deploy `api/met/[...path].ts` as a Vercel Edge Function
+4. Deploy `netlify/edge-functions/met-proxy.ts` as an Edge Function on the Deno runtime
 
-The first deployment takes about 1–2 minutes. You'll get a live URL like `https://elak-hujan.vercel.app`.
+The first deployment takes about 1–2 minutes. You'll get a live URL like `https://elak-hujan.netlify.app`.
 
 ---
 
@@ -76,13 +73,13 @@ The first deployment takes about 1–2 minutes. You'll get a live URL like `http
 
 1. Open the live URL on your phone
 2. Go through the onboarding wizard — set your home location, office location, commute windows, and office day preferences
-3. Tap **Install** (or **Add to Home Screen**) in your browser to install it as a PWA
+3. Tap **Add to Home Screen** in your browser to install it as a PWA
 
 ---
 
 ## Subsequent deployments
 
-Every `git push` to `main` triggers an automatic redeploy on Vercel. No manual steps needed.
+Every `git push` to `main` triggers an automatic redeploy on Netlify. No manual steps needed.
 
 ```bash
 git add .
@@ -94,7 +91,7 @@ git push
 
 ## Verifying the MET API proxy is working
 
-After deployment, open the browser DevTools Network tab and check for requests to `/api/met/locations`. It should return a 200 with a JSON array of Malaysian state locations. If it returns 401, your `MET_TOKEN` is wrong or not set.
+After deployment, open browser DevTools → Network tab and look for a request to `/api/met/locations`. It should return 200 with a JSON array of Malaysian state locations. If it returns 401, the `MET_TOKEN` env var is missing or incorrect.
 
 ---
 
@@ -102,6 +99,6 @@ After deployment, open the browser DevTools Network tab and check for requests t
 
 | Variable | Where to set | Required |
 |----------|-------------|----------|
-| `MET_TOKEN` | Vercel project → Settings → Environment Variables | Yes |
+| `MET_TOKEN` | Netlify site → Site configuration → Environment variables | Yes |
 
 No other environment variables are needed. Open-Meteo, data.gov.my, and Nominatim are all public APIs that require no key.

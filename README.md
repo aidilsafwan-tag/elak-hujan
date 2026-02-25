@@ -35,14 +35,14 @@ The Vite dev server proxies `/api/met/*` to `api.met.gov.my/v2.1` using the `MET
 npm run build
 ```
 
-## Deploying to Vercel
+## Deploying to Netlify
 
 1. Push to GitHub
-2. Import the project at [vercel.com](https://vercel.com)
-3. Add the environment variable `MET_TOKEN` (your api.met.gov.my token) in the Vercel project settings
+2. Import the project at [app.netlify.com](https://app.netlify.com)
+3. Add the environment variable `MET_TOKEN` (your api.met.gov.my token) in the Netlify site settings
 4. Deploy
 
-The `api/met/[...path].ts` Vercel Edge Function proxies all MET Malaysia API calls server-side, keeping the token out of the browser.
+The `netlify/edge-functions/met-proxy.ts` Edge Function proxies all MET Malaysia API calls server-side, keeping the token out of the browser. See `docs/DEPLOYMENT.md` for the full step-by-step guide.
 
 ## Data Sources
 
@@ -59,4 +59,4 @@ The `api/met/[...path].ts` Vercel Edge Function proxies all MET Malaysia API cal
 - Tailwind CSS v4, shadcn/ui (new-york)
 - Zustand (state), TanStack Query v5 (caching)
 - React Router v7
-- Vercel (SPA hosting + Edge Function proxy for MET Malaysia API)
+- Netlify (SPA hosting + Deno Edge Function proxy for MET Malaysia API)
