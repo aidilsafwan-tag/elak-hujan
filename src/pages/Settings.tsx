@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Clock, CalendarCheck, Droplets, AlertTriangle, Check, Info } from 'lucide-react';
+import { MapPin, Clock, CalendarCheck, Droplets, AlertTriangle, Check, Info, Github, Linkedin } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -75,7 +75,7 @@ export function Settings() {
   }
 
   return (
-    <div className="px-4 py-6 space-y-4 pb-24">
+    <div className="px-4 py-6 space-y-4">
       <h1 className="text-xl font-bold">{copy.settings.title}</h1>
 
       {/* Locations */}
@@ -250,7 +250,17 @@ export function Settings() {
 
         <p className="text-xs text-muted-foreground border-t pt-3">{copy.about.disclaimer}</p>
         <p className="text-xs text-muted-foreground/60 italic">{copy.about.tagline}</p>
-        <p className="text-xs text-muted-foreground/60 italic">{copy.about.credit}</p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-muted-foreground/60 italic">{copy.about.credit}</p>
+          <div className="flex gap-3">
+            <a href={copy.about.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <Github className="size-4 text-muted-foreground/60 hover:text-foreground transition-colors" />
+            </a>
+            <a href={copy.about.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <Linkedin className="size-4 text-muted-foreground/60 hover:text-foreground transition-colors" />
+            </a>
+          </div>
+        </div>
       </SectionCard>
     </div>
   );

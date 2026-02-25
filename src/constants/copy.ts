@@ -89,6 +89,8 @@ export const copy = {
     disclaimer: "Gunakan sebagai panduan perancangan sahaja. Semak ramalan terkini sebelum bertolak.",
     tagline: "kita merancang, tuhan menentukan :p",
     credit: "vibe-coded by aidil safwan",
+    github: "https://github.com/aidilsfwn",
+    linkedin: "https://www.linkedin.com/in/aidilsafwan/",
   },
 
   errors: {
