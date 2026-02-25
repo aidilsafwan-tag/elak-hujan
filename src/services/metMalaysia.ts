@@ -2,26 +2,22 @@ import type {
   MetLocation,
   MetLocationsResponse,
   MetDataResponse,
-  NowcastSlot,
-  RainsNowcast,
+  ForecastPeriod,
+  MetDailyForecast,
 } from '@/types/metMalaysia';
 
 const BASE_URL = '/api/met';
 
-const DATATYPE_OFFSET: Record<string, number> = {
-  RAINS: 0,
-  RAINS10m: 10,
-  RAINS20m: 20,
-  RAINS30m: 30,
-  RAINS40m: 40,
-  RAINS50m: 50,
-  RAINS60m: 60,
-  RAINS70m: 70,
-  RAINS80m: 80,
-  RAINS90m: 90,
-  RAINS100m: 100,
-  RAINS110m: 110,
-  RAINS120m: 120,
+const PERIOD_MAP: Record<string, ForecastPeriod['period']> = {
+  FGM: 'morning',
+  FGA: 'afternoon',
+  FGN: 'night',
+};
+
+const PERIOD_LABEL: Record<ForecastPeriod['period'], string> = {
+  morning: 'Pagi',
+  afternoon: 'Petang',
+  night: 'Malam',
 };
 
 export async function fetchMetStateLocations(): Promise<MetLocation[]> {
@@ -32,36 +28,34 @@ export async function fetchMetStateLocations(): Promise<MetLocation[]> {
   return json.results ?? [];
 }
 
-export async function fetchRainsNowcast(locationId: string): Promise<RainsNowcast | null> {
+export async function fetchTodayForecast(locationId: string): Promise<MetDailyForecast | null> {
   const today = new Date().toISOString().slice(0, 10);
   const params = new URLSearchParams({
-    datasetid: 'OBSERVATION',
-    datacategoryid: 'RAINS',
+    datasetid: 'FORECAST',
+    datacategoryid: 'GENERAL',
     locationid: locationId,
     start_date: today,
     end_date: today,
+    lang: 'ms',
   });
 
   const res = await fetch(`${BASE_URL}/data?${params}`);
-  if (!res.ok) throw new Error(`MET nowcast error: ${res.status}`);
+  if (!res.ok) throw new Error(`MET forecast error: ${res.status}`);
   const json = (await res.json()) as MetDataResponse;
 
-  const byOffset: Record<number, number | null> = {};
-  for (const result of json.results ?? []) {
-    const offset = DATATYPE_OFFSET[result.datatype];
-    if (offset !== undefined) {
-      byOffset[offset] = typeof result.value === 'number' ? result.value : null;
-    }
-  }
+  const periods: ForecastPeriod[] = (json.results ?? [])
+    .filter((r) => PERIOD_MAP[r.datatype])
+    .map((r) => {
+      const period = PERIOD_MAP[r.datatype];
+      return {
+        period,
+        label: PERIOD_LABEL[period],
+        condition: typeof r.value === 'string' ? r.value : String(r.value ?? ''),
+      };
+    });
 
-  const slots: NowcastSlot[] = Object.entries(DATATYPE_OFFSET)
-    .map(([, offset]) => ({
-      offsetMinutes: offset,
-      value: byOffset[offset] ?? null,
-      label: offset === 0 ? 'Sekarang' : `+${offset}min`,
-    }))
-    .sort((a, b) => a.offsetMinutes - b.offsetMinutes);
+  if (periods.length === 0) return null;
 
   const locationName = json.results?.[0]?.locationname ?? '';
-  return { locationId, locationName, slots };
+  return { locationId, locationName, date: today, periods };
 }

@@ -120,9 +120,7 @@ export const copy = {
     refresh: "Muat semula",
     loading: "Mengira masa terbaik...",
     noOfficeWeather: "Data cuaca pejabat tidak tersedia.",
-    nowcastTitle: "Radar Sekarang",
-    nowcastDry: "Kering",
-    nowcastRaining: "Hujan",
+    metForecastTitle: "Ramalan MET Hari Ini",
   },
 
   dayDetail: {

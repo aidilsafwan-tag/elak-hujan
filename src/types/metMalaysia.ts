@@ -27,15 +27,15 @@ export interface MetDataResponse {
   results: MetDataResult[];
 }
 
-export interface NowcastSlot {
-  offsetMinutes: number;
-  /** Rain value in mm. Null means data unavailable for this slot. */
-  value: number | null;
+export interface ForecastPeriod {
+  period: 'morning' | 'afternoon' | 'night';
   label: string;
+  condition: string;
 }
 
-export interface RainsNowcast {
+export interface MetDailyForecast {
   locationId: string;
   locationName: string;
-  slots: NowcastSlot[];
+  date: string;
+  periods: ForecastPeriod[];
 }

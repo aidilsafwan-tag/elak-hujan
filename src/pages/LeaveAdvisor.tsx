@@ -9,68 +9,55 @@ import { getRecommendedLeaveTime, getRollingSlots } from '@/lib/leaveAdvisor';
 import { WarningAlert } from '@/components/WarningAlert';
 import { copy } from '@/constants/copy';
 import { cn } from '@/lib/utils';
-import type { NowcastSlot, RainsNowcast } from '@/types/metMalaysia';
+import type { ForecastPeriod, MetDailyForecast } from '@/types/metMalaysia';
 
-function NowcastCell({ slot }: { slot: NowcastSlot }) {
-  const isRaining = slot.value !== null && slot.value > 0;
+function conditionStyle(condition: string): string {
+  const lower = condition.toLowerCase();
+  if (lower.includes('ribut') || lower.includes('petir')) return 'bg-red-50 border-red-200 text-red-700';
+  if (lower.includes('hujan')) return 'bg-sky-50 border-sky-200 text-sky-700';
+  if (lower.includes('cerah') || lower.includes('beriawan') || lower.includes('berawan')) return 'bg-emerald-50 border-emerald-200 text-emerald-700';
+  return 'bg-muted/50 border-border text-muted-foreground';
+}
+
+function ForecastCell({ period }: { period: ForecastPeriod }) {
   return (
-    <div
-      className={cn(
-        'rounded-lg border p-2 text-center space-y-0.5',
-        isRaining ? 'bg-sky-50 border-sky-200' : 'bg-emerald-50 border-emerald-200',
-      )}
-    >
-      <p className="text-[10px] text-muted-foreground truncate">{slot.label}</p>
-      <p
-        className={cn(
-          'text-xs font-semibold tabular-nums',
-          isRaining ? 'text-sky-700' : 'text-emerald-700',
-        )}
-      >
-        {slot.value !== null
-          ? isRaining
-            ? copy.leaveAdvisor.nowcastRaining
-            : copy.leaveAdvisor.nowcastDry
-          : '—'}
-      </p>
+    <div className={cn('rounded-lg border p-2 text-center space-y-1', conditionStyle(period.condition))}>
+      <p className="text-[10px] font-medium opacity-70">{period.label}</p>
+      <p className="text-[10px] leading-tight line-clamp-2">{period.condition}</p>
     </div>
   );
 }
 
-function NowcastSection({
-  nowcast,
+function MetForecastSection({
+  forecast,
   isLoading,
   isError,
 }: {
-  nowcast: RainsNowcast | null;
+  forecast: MetDailyForecast | null;
   isLoading: boolean;
   isError: boolean;
 }) {
   if (isLoading) return <Skeleton className="h-[72px] w-full rounded-xl" />;
   if (isError) return (
     <p className="text-xs text-muted-foreground/60 text-center py-1">
-      Radar MET tidak tersedia
+      Ramalan MET tidak tersedia
     </p>
   );
-  if (!nowcast) return null;
-
-  const keySlots = nowcast.slots.filter((s) =>
-    [0, 30, 60, 90, 120].includes(s.offsetMinutes),
-  );
+  if (!forecast) return null;
 
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         <p className="text-sm font-medium text-muted-foreground">
-          {copy.leaveAdvisor.nowcastTitle}
+          {copy.leaveAdvisor.metForecastTitle}
         </p>
         <span className="inline-flex items-center rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-          MET Radar
+          MET Malaysia
         </span>
       </div>
-      <div className="grid grid-cols-5 gap-1.5">
-        {keySlots.map((slot) => (
-          <NowcastCell key={slot.offsetMinutes} slot={slot} />
+      <div className="grid grid-cols-3 gap-1.5">
+        {forecast.periods.map((p) => (
+          <ForecastCell key={p.period} period={p} />
         ))}
       </div>
     </div>
@@ -110,7 +97,7 @@ function SlotRow({
 export function LeaveAdvisor() {
   const { config } = useConfig();
   const { officeWeather, isLoading, isError, refetch } = useWeather();
-  const { nowcast, isLoading: isNowcastLoading, isError: isNowcastError } = useNowcast(config?.officeLocation);
+  const { forecast, isLoading: isForecastLoading, isError: isForecastError } = useNowcast(config?.officeLocation);
 
   if (!config) return null;
 
@@ -159,8 +146,8 @@ export function LeaveAdvisor() {
         <p className="text-sm text-muted-foreground">{copy.leaveAdvisor.noOfficeWeather}</p>
       )}
 
-      {/* MET radar nowcast — loads independently of Open-Meteo */}
-      <NowcastSection nowcast={nowcast} isLoading={isNowcastLoading} isError={isNowcastError} />
+      {/* MET official daily forecast — loads independently of Open-Meteo */}
+      <MetForecastSection forecast={forecast} isLoading={isForecastLoading} isError={isForecastError} />
 
       {!isLoading && !isError && rec && (
         <>

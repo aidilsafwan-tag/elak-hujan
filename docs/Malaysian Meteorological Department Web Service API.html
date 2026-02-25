@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)https://api.met.gov.my/dashboard/docs#generalforecast -->
+<html lang="en" class="fa-events-icons-ready"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="API service for Malaysian Meteorological Department">
+    <meta name="author" content="METMalaysia">
+    <link rel="icon" href="https://api.met.gov.my/static/public/images/favicon.ico">
+
+    <title>Malaysian Meteorological Department Web Service API</title>
+
+
+    <!-- bootstrap CSS -->
+    <link rel="stylesheet" href="./Malaysian Meteorological Department Web Service API_files/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="./Malaysian Meteorological Department Web Service API_files/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link rel="stylesheet" href="./Malaysian Meteorological Department Web Service API_files/bootstrap-social.css">
+    <link rel="stylesheet" href="./Malaysian Meteorological Department Web Service API_files/prism.css">
+    <link rel="stylesheet" href="./Malaysian Meteorological Department Web Service API_files/dashboard.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" async="" defer="" src="./Malaysian Meteorological Department Web Service API_files/piwik.js.download"></script><script src="./Malaysian Meteorological Department Web Service API_files/fea04b975c.js.download"></script><link rel="stylesheet" href="./Malaysian Meteorological Department Web Service API_files/fea04b975c.css" media="all">
+    <!-- Piwik -->
+    <script type="text/javascript">
+      var _paq = _paq || [];
+      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="//pwkrakanmet.met.gov.my/";
+        _paq.push(['setTrackerUrl', u+'piwik.php']);
+        _paq.push(['setSiteId', '2']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <!-- End Piwik Code -->
+  </head>
+
+    <body id="dashboard">
+      <div id="dashboard-top"></div>
+      <div id="dashboard-menu-header">
+        <div class="navbar navbar-blue">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#dashboard-menu" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="https://api.met.gov.my/dashboard">MET API Dashboard</a>
+            </div>
+            <div class="collapse navbar-collapse" id="dashboard-menu">
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="https://api.met.gov.my/logout"><i class="fa fa-sign-out hidden-xs" aria-hidden="true"></i> Logout</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="dashboard-content">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-3" id="dashboard-side-content">
+              <h1><a href="https://api.met.gov.my/dashboard/docs">Documentation</a></h1>
+              <ul>
+                <li><a href="https://api.met.gov.my/dashboard/docs#gettingstart">Getting Started</a></li>
+                <li><a href="https://api.met.gov.my/dashboard/docs#baseurl">Base URL</a></li>
+                <li><a href="https://api.met.gov.my/dashboard/docs#dataformat">Data Interchange Format</a></li>
+                <li><a href="https://api.met.gov.my/dashboard/docs#auth">Authentication</a></li>
+                <li><a href="https://api.met.gov.my/dashboard/docs#throttle">Throttling</a></li>
+                <li><a href="https://api.met.gov.my/dashboard/docs#endpoints">Endpoints</a></li>
+                <li><a href="https://api.met.gov.my/dashboard/docs#reqrep">Request &amp; Response</a></li>
+                <li><a href="https://api.met.gov.my/dashboard/docs#dataavailable">Data Available</a></li>
+                <li><a href="https://api.met.gov.my/dashboard/docs#generalforecast">General Forecast</a></li>
+                <li><a href="https://api.met.gov.my/dashboard/docs#marineforecast">Marine Forecast</a></li>
+                <li><a href="https://api.met.gov.my/dashboard/docs#warnings">Warnings</a></li>
+                <!-- li><a href="/dashboard/docs#hourlyobserve">Hourly Observation</a></li -->
+                <li><a href="https://api.met.gov.my/dashboard/docs#locations">Locations</a></li>
+                <li><a href="https://api.met.gov.my/dashboard/docs#datatypes">Data Types</a></li>
+                <!-- li><a href="/dashboard/docs#stations">Stations</a></li -->
+                <li><a href="https://api.met.gov.my/dashboard/docs#satnrad">Satellite &amp; Radar Images</a></li>
+              </ul>
+            </div>
+            <div class="col-md-9" id="dashboard-main-content">
+              <ol class="breadcrumb">
+                <li><a href="https://api.met.gov.my/dashboard/docs#">Documentation</a></li>
+              </ol>
+              <a name="gettingstarted"></a>
+              <h1>Getting Started</h1>
+	      <p>Malaysian Meteorological Department API is a web service which provides methods for accesing specific resources at canonical URL. We do not support any specific programming language or tools and we expect users already have the necessary understanding of the underlying technology, namely <code>HTTP</code> and <code>JSON</code>. All examples given in this documentation will assume a working knowledge of <code>HTTP</code> and <code>JSON</code>.</p>
+              <a name="baseurl"></a>
+              <h1>Base URL</h1>
+              <pre class=" language-bash"><code class=" language-bash">https://api.met.gov.my/v2.1/</code></pre>
+              <p>Note: The use of base URL <code class=" language-bash">https://api.met.gov.my/v2/</code> is deprecated.</p>
+              <h1>Data Interchange Format</h1>
+              <p>The supported data interchange format is <code>JSON</code>.</p>
+              <a name="auth"></a>
+              <h1>Authentication</h1>
+              <p>Every request must include an authentication token. The authentication token key must be included in the <code>Authorization</code> HTTP header. The key must be prefixed by the string literal “METToken”, followed by a whitespace separating the two strings. For example:</p>
+              <pre class=" language-bash"><code class=" language-bash">Authorization: METToken a120e716f5432d05fedf2b44ce073ac47d79bdd8</code></pre>
+              <p>Unauthenticated responses that are denied permission will result in <code>HTTP 401 Unauthorized</code>.</p>
+              <a name="throttle"></a>
+              <h1>Throttling</h1>
+              <p>Every authenticated requests are subjected to throttling.</p>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Rate</th>
+                    <th>Description</th>
+                  </tr>
+                </thead><thead>
+                </thead><tbody>
+                  <tr>
+                    <td>Burst rate</td>
+                    <td>Maximum burst requests is 10 per minute.</td>
+                  </tr>
+                  <tr>
+                    <td>Sustained rate</td>
+                    <td>Maximum sustained requests is 2,000 per day.</td>
+                  </tr>
+                </tbody><tbody>
+              </tbody></table>
+              <a name="endpoints"></a>
+              <h1>Endpoints</h1>
+              <p>Valid endpoints are:</p>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                  </tr>
+                </thead><thead>
+                </thead><tbody>
+                  <tr>
+                    <td>/locations</td>
+                    <td>A location is geopolitical entity.</td>
+                  </tr>
+                  <!-- tr>
+                    <td>/stations</td>
+                    <td>A station is a weather station.</td>
+                  </tr -->
+                  <tr>
+                    <td>/data</td>
+                    <td>A datum is a pre-calculated or observed value with any ancillary attributes at a specific place and time.</td>
+                  </tr>
+                  <tr>
+                    <td>/datatypes</td>
+                    <td>A data type describes a datum.</td>
+                  </tr>
+                </tbody><tbody>
+              </tbody></table>
+              <a name="reqrep"></a>
+              <h1>Request &amp; Response</h1>
+              <p>Below is an example of a basic HTTP request:</p>
+              <pre class=" language-bash"><code class=" language-bash">GET /v2.1/&lt;endpoint&gt; HTTP/1.1
+User-Agent: &lt;user agent&gt;
+Host: api.met.gov.my
+Accept: */*
+Authorization: METToken a120e716f5432d05fedf2b44ce073ac47d79bdd8</code></pre>
+              <p>Below is an example of a typical basic HTTP response:</p>
+              <pre class=" language-bash"><code class=" language-bash">HTTP/1.1 200 OK
+Date: Mon, 02 Jan 2017 01:21:21 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+Cache-Control: max-age=600
+ETag: "8078add66f5de3462fb572426f235ea5660c1a7513d935c2cbe65026649b5fb8"
+Allow: GET, OPTIONS
+X-Frame-Options: SAMEORIGIN
+X-Frame-Option: SAMEORIGIN</code></pre>
+              <p>A client is encouraged to take advantage of <code>ETag</code> and <code>Cache-Control</code> HTTP headers for subsequent request to the same resource.</p>
+              <a name="dataavailable"></a>
+              <h1>Data Available</h1>
+              <p>There are 3 types of data available:
+                </p><ul>
+                  <li>General (weather) Forecast</li>
+                  <li>Marine Forecast</li>
+                  <!-- li>Hourly Observation by weather station</li -->
+                  <li>Warnings</li>
+                </ul><p></p>
+              <p>By default, upon registration you only have access to general forecast, marine forecast &amp; warnings.</p>
+              <a name="generalforecast"></a>
+              <h1>General Forecast</h1>
+              <p>In order to query weather forecast data, you need to request from <code>/data</code> endpoint. Most of the time you would want a location that falls under the category TOWN or TOURISTDEST (tourist destination). See <a href="https://api.met.gov.my/dashboard/docs#locations">Locations</a> for further information.</p>
+              <p>Five (5) query parameters are required. There is one (1) optional parameter to select language:
+                </p><table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Query Parameter</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead><thead>
+                  </thead><tbody>
+                    <tr>
+                      <td><code>datasetid</code></td>
+                      <td>FORECAST</td>
+                    </tr>
+                    <tr>
+                      <td><code>datacategoryid</code></td>
+                      <td>GENERAL</td>
+                    </tr>
+                    <tr>
+                      <td><code>locationid</code></td>
+                      <td>See <a href="https://api.met.gov.my/dashboard/docs#locations">Locations</a>. In order to fetch data for all locations put the value <code>ALL_LOCATIONS<code>.</code></code></td>
+                    </tr>
+                    <tr>
+                      <td><code>start_date</code></td>
+                      <td>Date in ISO8601 format (YYYY-MM-DD) e.g. 2026-02-25. The value must be today’s date or greater.</td>
+                    </tr>
+                    <tr>
+                      <td><code>end_date</code></td>
+                      <td>Date in ISO8601 format (YYYY-MM-DD) e.g. 2026-02-25. The value must be equal or greater than <code>start_date</code>.</td>
+                    </tr>
+                    <tr>
+                      <td><code>lang</code></td>
+                      <td><code>en</code> for English or <code>ms</code> for Bahasa Melayu. If this parameter is not specified, the default is English.</td>
+                    </tr>
+                  </tbody><tbody>
+                </tbody></table><p></p>
+              <p>For example, to query weather forecast data for Putrajaya which has <code>locationid</code> of <code>LOCATION:237</code>, you will make a call like below:</p>
+              <pre class=" language-bash"><code class=" language-bash">https://api.met.gov.my/v2.1/data?datasetid=FORECAST&amp;datacategoryid=GENERAL&amp;locationid=LOCATION:237&amp;start_date=2026-02-25&amp;end_date=2026-02-25</code></pre>
+              <p>Below is an example of response data:</p>
+              <pre class=" language-bash"><code class=" language-bash">{
+    "metadata": {
+        "resultset": {
+            "count":6,
+            "offset":0,
+            "limit":50,
+            "locationid":"LOCATION:237",
+            "datasetid":"FORECAST",
+            "datacategoryid":"GENERAL"
+        }
+    },
+    "results": [
+        {
+            "locationid":"LOCATION:237",
+            "locationname":"PUTRAJAYA",
+            "locationrootid":"LOCATION:12",
+            "locationrootname":"PUTRAJAYA",
+            "date":"2026-02-25T00:00:00+08:00",
+            "datatype":"FMAXT",
+            "value":34,
+            "latitude":2.91667,
+            "longitude":101.7,
+            "attributes": {
+                "unit":"Celcius",
+                "ref":null,
+                "valid_from":null,
+                "valid_to":null
+            }
+        },
+        ...
+    ]
+}</code></pre>
+              <p>Response data consist of two parts: metadata and results. Metadata are data which describes about the query and data. Results on the other hand are a list of data in response to the request. Most of the attributes in the response are self-explanatory, therefore only relevant attributes will be described.</p>
+              <p>Important metadata attributes for general forecast:
+                </p><table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Atrribute</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead><thead>
+                  </thead><tbody>
+                    <tr>
+                      <td><code>count</code></td>
+                      <td>Total number of records in results.</td>
+                    </tr>
+                  </tbody><tbody>
+                </tbody></table><p></p>
+              <p>Important results attributes for general forecast:
+                </p><table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Atrribute</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead><thead>
+                  </thead><tbody>
+                    <tr>
+                      <td><code>datatype</code></td>
+                      <td>Type of data. See <a href="https://api.met.gov.my/dashboard/docs#datatypes">Data Types</a>.</td>
+                    </tr>
+                    <tr>
+                      <td><code>value</code></td>
+                      <td>The actual value of the result. Can be a string, integer or float.</td>
+                    </tr>
+                    <tr>
+                      <td><code>attributes</code></td>
+                      <td>Further information on the value, if any.</td>
+                    </tr>
+                  </tbody><tbody>
+                </tbody></table><p></p>
+              <a name="marineforecast"></a>
+              <h1>Marine Forecast</h1>
+              <p>In order to query marine forecast data, you need to request from <code>/data</code> endpoint. You need a location that falls under the category WATER. See <a href="https://api.met.gov.my/dashboard/docs#locations">Locations</a> for further information.</p>
+              <p>Five (5) query parameters are required. There is one (1) optional parameter to select language:
+                </p><table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Query Parameter</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead><thead>
+                  </thead><tbody>
+                    <tr>
+                      <td><code>datasetid</code></td>
+                      <td>FORECAST</td>
+                    </tr>
+                    <tr>
+                      <td><code>datacategoryid</code></td>
+                      <td>GENERAL</td>
+                    </tr>
+                    <tr>
+                      <td><code>locationid</code></td>
+                      <td>See <a href="https://api.met.gov.my/dashboard/docs#locations">Locations</a>.</td>
+                    </tr>
+                    <tr>
+                      <td><code>start_date</code></td>
+                      <td>Date in ISO8601 format (YYYY-MM-DD) e.g. 2026-02-25. The value must be today’s date or greater.</td>
+                    </tr>
+                    <tr>
+                      <td><code>end_date</code></td>
+                      <td>Date in ISO8601 format (YYYY-MM-DD) e.g. 2026-02-25. The value must be equal or greater than <code>start_date</code>.</td>
+                    </tr>
+                    <tr>
+                      <td><code>lang</code></td>
+                      <td><code>en</code> for English or <code>ms</code> for Bahasa Melayu. If this parameter is not specified, the default is English.</td>
+                    </tr>
+                  </tbody><tbody>
+                </tbody></table><p></p>
+              <p>For example, to query weather forecast data for Terengganu Waters which has <code>locationid</code> of <code>LOCATION:501</code>, you will make a call like below:</p>
+              <pre class=" language-bash"><code class=" language-bash">https://api.met.gov.my/v2.1/data?datasetid=FORECAST&amp;datacategoryid=MARINE&amp;locationid=LOCATION:501&amp;start_date=2026-02-25&amp;end_date=2026-02-25</code></pre>
+              <p>Below is an example of response data:</p>
+              <pre class=" language-bash"><code class=" language-bash">{
+    "metadata": {
+        "resultset": {
+            "count": 7,
+            "offset": 0,
+            "limit": 50,
+            "locationid": "LOCATION:501",
+            "datasetid": "FORECAST",
+            "datacategoryid": "MARINE"
+        }
+    },
+    "results": [
+        {
+            "locationid": "LOCATION:501",
+            "locationname": "TERENGGANU",
+            "date": "2021-02-09T00:00:00+08:00",
+            "datatype": "FMWS",
+            "value": "20-30",
+            "latitude": null,
+            "longitude": null,
+            "attributes": {
+                "unit": "km/h",
+                "ref": null,
+                "valid_from": null,
+                "valid_to": null
+            }
+        },
+        ...
+    ]
+}</code></pre>
+              <p>Response data consist of two parts: metadata and results. Metadata are data which describes about the query and data. Results on the other hand are a list of data in response to the request. Most of the attributes in the response are self-explanatory, therefore only relevant attributes will be described.</p>
+              <p>Important metadata attributes for marine forecast:
+                </p><table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Atrribute</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead><thead>
+                  </thead><tbody>
+                    <tr>
+                      <td><code>count</code></td>
+                      <td>Total number of records in results.</td>
+                    </tr>
+                  </tbody><tbody>
+                </tbody></table><p></p>
+              <p>Important results attributes for marine forecast:
+                </p><table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Atrribute</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead><thead>
+                  </thead><tbody>
+                    <tr>
+                      <td><code>datatype</code></td>
+                      <td>Type of data. See <a href="https://api.met.gov.my/dashboard/docs#datatypes">Data Types</a>.</td>
+                    </tr>
+                    <tr>
+                      <td><code>value</code></td>
+                      <td>The actual value of the result. Can be a string, integer or float.</td>
+                    </tr>
+                    <tr>
+                      <td><code>attributes</code></td>
+                      <td>Further information on the value, if any.</td>
+                    </tr>
+                  </tbody><tbody>
+                </tbody></table><p></p>
+              <a name="warnings"></a>
+              <h1>Warnings</h1>
+              <p>There five (5) types of warnings available namely earthquake/tsunami; strong wind &amp; rough seas; thunderstorm; continuous heavy rain; and tropical cyclone. In order to query warnings, you need to request from <code>/data</code> endpoint.</p>
+              <p>Four (4) query parameters are required:
+                </p><table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Query Parameter</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead><thead>
+                  </thead><tbody>
+                    <tr>
+                      <td><code>datasetid</code></td>
+                      <td>WARNING</td>
+                    </tr>
+                    <tr>
+                      <td><code>datacategoryid</code></td>
+                      <td>QUAKETSUNAMI (earthquake/tsunami)<br>
+                          WINDSEA (strong wind &amp; rough sea)<br>
+                          THUNDERSTORM (thunderstorm)<br>
+                          RAIN (continuous heavy rain)<br>
+                          CYCLONE (tropical cyclone)</td>
+                    </tr>
+                    <tr>
+                      <td><code>start_date</code></td>
+                      <td>Date in ISO8601 format (YYYY-MM-DD) e.g. 2026-02-25. The value must be today’s date or greater.</td>
+                    </tr>
+                    <tr>
+                      <td><code>end_date</code></td>
+                      <td>Date in ISO8601 format (YYYY-MM-DD) e.g. 2026-02-25. The value must be equal or greater than <code>start_date</code>.</td>
+                    </tr>
+                  </tbody><tbody>
+                </tbody></table><p></p>
+              <p>Note that <code>start_date</code> and <code>end_date</code> are not a range of warnings published dates. Instead these values represent a range of date which warnings may be valid (not expired or retracted). For example, to query warning for strong wind &amp; rough seas, you will make a call like below:</p>
+              <pre class=" language-bash"><code class=" language-bash">https://api.met.gov.my/v2.1/data?datasetid=WARNING&amp;datacategoryid=WINDSEA2&amp;start_date=2026-02-25&amp;end_date=2026-02-25</code></pre>
+              <p>Below is an example of response data:</p>
+              <pre class=" language-bash"><code class=" language-bash">{
+    "metadata": {
+        "resultset": {
+            "count": 1,
+            "offset": 0,
+            "limit": 50,
+            "datasetid": "WARNING",
+            "datacategoryid": "QUAKETSUNAMI"
+        }
+    },
+    "results": [
+        {
+            "date": "2026-02-25T15:37:11.481920+08:00",
+            "datatype": "QUAKETSUNAMI",
+            "value": {
+                "heading": {
+                    "en": "Moderate Earthquake in Banda Sea",
+                    "ms": "Gempa Bumi Sederhana di Laut Banda"
+                },
+                "text": {
+                    "en": {
+                        "earthquake": "A moderate earthquake of magnitude 5.2 on the Richter ...",
+                        "tsunami": "No tsunami threat to Malaysia."
+                    },
+                    "ms": {
+                        "earthquake": "Gempa bumi sederhana bermagnitud 5.2 pada skala Richter ...",
+                        "tsunami": "Tiada ancaman tsunami kepada Malaysia."
+                    }
+                }
+            },
+            "latitude": null,
+            "longitude": null,
+            "attributes": {
+                "title": {
+                    "en": "Earthquake information",
+                    "ms": "Maklumat Gempa Bumi"
+                },
+                "ref": null,
+                "timestamp": "2026-02-25T15:24:00+08:00",
+                "valid_from": "2026-02-25T15:24:00+08:00",
+                "valid_to": "2026-02-25T15:24:00+08:00"
+            }
+        }
+    ]
+}</code></pre>
+              <p>Response data consist of two parts: metadata and results. Metadata are data which describes about the query and data. Results on the other hand are a list of data in response to the request. Most of the attributes in the response are self-explanatory, therefore only relevant attributes will be described.</p>
+              <p>Important metadata attributes for warning:
+                </p><table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Atrribute</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead><thead>
+                  </thead><tbody>
+                    <tr>
+                      <td><code>count</code></td>
+                      <td>Total number of records in results.</td>
+                    </tr>
+                  </tbody><tbody>
+                </tbody></table><p></p>
+              <p>Important results attributes for warning:
+                </p><table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Atrribute</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead><thead>
+                  </thead><tbody>
+                    <tr>
+                      <td><code>date</code></td>
+                      <td>Date &amp; time published at the API server.</td>
+                    </tr>
+                    <tr>
+                      <td><code>datatype</code></td>
+                      <td>Type of data. See <a href="https://api.met.gov.my/dashboard/docs#datatypes">Data Types</a>.</td>
+                    </tr>
+                    <tr>
+                      <td><code>value</code></td>
+                      <td>JSON with heading and text parts.</td>
+                    </tr>
+                    <tr>
+                      <td><code>attributes</code></td>
+                      <td>Further information on the value.<br>
+                        <code>valid_from</code> Start valid period timestamp<br>
+                        <code>valid_to</code> End valid period timestamp</td>
+                    </tr>
+                  </tbody><tbody>
+                </tbody></table><p></p>
+              <!-- a name="hourlyobserve"></a>
+              <h1>Hourly Observation</h1>
+              <p>In order to hourly observation data, you need to request from <code>/data</code> endpoint.</p>
+              <p>Five (5) query parameters are required:
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Query Parameter</th>
+                      <th>Value</th>
+                    </tr>
+                  <thead>
+                  <tbody>
+                    <tr>
+                      <td><code>datasetid</code></td>
+                      <td>OBSERVATION</td>
+                    </tr>
+                    <tr>
+                      <td><code>datacategoryid</code></td>
+                      <td>HOURLY</td>
+                    </tr>
+                    <tr>
+                      <td><code>stationid</code></td>
+                      <td>See <a href="/dashboard/docs#stations">Stations</a>.</td>
+                    </tr>
+                    <tr>
+                      <td><code>start_date</code></td>
+                      <td>Date and time in ISO8601 format (YYYY-MM-DD HH:MM:SS) e.g. 2026-02-25 08:00:00. The value must be today&rsquo;s date or greater.</td>
+                    </tr>
+                    <tr>
+                      <td><code>end_date</code></td>
+                      <td>Date and time in ISO8601 format (YYYY-MM-DD HH:MM:SS) e.g. 2026-02-25 10:00:00. The value must be equal or greater than <code>start_date</code>.</td>
+                    </tr>
+                  <tbody>
+                </table></p>
+              <p>For example, to query hourly observation data from Kuantan weather station which has <code>stationid</code> of <code>STATION:48657</code>, you will make a call like below:</p>
+              <pre><code class="language-bash">https://api.met.gov.my/v2.1/data?datasetid=OBSERVATION&datacategoryid=HOURLY&stationid=STATION:48657&start_date=2026-02-25%2008:00:00&end_date=2026-02-25%2010:00:00</code></pre -->
+              <a name="locations"></a>
+              <h1>Locations</h1>
+              <p>There are 5 location categories:
+                </p><ul>
+                  <li>STATE (for general forecast)</li>
+                  <li>DISTRICT (for general forecast)</li>
+                  <li>TOWN (for general forecast)</li>
+                  <li>TOURISTDEST (for general forecast)</li>
+                  <li>WATERS (for marine forecast)</li>
+                </ul><p></p>
+              <p>You can get a list of locations for each category by calling the <code>/locations</code> endpoint using <code>HTTP GET</code> method:</p>
+              <pre class=" language-bash"><code class=" language-bash">https://api.met.gov.my/v2.1/locations?locationcategoryid=&lt;location category&gt;</code></pre>
+              <p>For example:</p>
+              <pre class=" language-bash"><code class=" language-bash">https://api.met.gov.my/v2.1/locations?locationcategoryid=TOWN</code></pre>
+              <p>Note that you will need a location ID in order to query a set of data.</p>
+              <p>This resource will only produced a maximum of 50 records in the result. There are times where the total records are more than 50. In such case you may use <code>offset</code> parameter in your <code>HTTP GET</code> query. The <code>offset</code> parameter is a positive integer value and always starts with 0. For example to get the next 50 records:</p>
+              <pre class=" language-bash"><code class=" language-bash">https://api.met.gov.my/v2.1/locations?locationcategoryid=TOWN&amp;offset=50</code></pre>
+              <a name="datatypes"></a>
+              <h1>Data Types</h1>
+              <p>You can get a list of data types by calling the <code>/datatypes</code> endpoint using <code>HTTP GET</code> method:</p>
+              <pre class=" language-bash"><code class=" language-bash">https://api.met.gov.my/v2.1/datatypes</code></pre>
+              <p>From the response, within the results, the <code>id</code> attribute represents the data type. <code>name</code> will provide a brief description about the data type.</p>
+              <!-- a name="stations"></a>
+              <h1>Stations</h1>
+              <p>You can get a list of stations by call the <code>/stations</code> endpoint using <code>HTTP GET</code> method:</p>
+              <pre><code class="language-bash">https://api.met.gov.my/v2.1/stations</code></pre -->
+              <a name="satnrad"></a>
+              <h1>Satellite &amp; Radar Images</h1>
+              <p>Latest satellite image:</p>
+              <pre class=" language-bash"><code class=" language-bash">https://api.met.gov.my/static/images/satelit-latest.gif</code></pre>
+              <p>Latest current radar image:</p>
+              <pre class=" language-bash"><code class=" language-bash">https://api.met.gov.my/static/images/radar-latest.gif</code></pre>
+              <p>Latest forecast radar image:</p>
+              <pre class=" language-bash"><code class=" language-bash">https://api.met.gov.my/static/images/swirl-latest.gif</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="dashboard-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <h3>Disclaimer</h3>
+            <p>The Government of Malaysia shall not be liable for any loss or damage caused by the usage of any information obtained from this website or any data from the Web API service.</p>
+          </div>
+          <div class="col-md-4">
+            <h3>Social Media</h3>
+            <p><a href="https://www.facebook.com/malaysiamet" class="btn btn-social-icon btn-facebook"><span class="fa fa-facebook" aria-hidden="true"></span></a> <a href="https://twitter.com/metmalaysia" class="btn btn-social-icon btn-twitter"><span class="fa fa-twitter" aria-hidden="true"></span></a> <a href="https://www.instagram.com/metmalaysia/" class="btn btn-social-icon btn-instagram"><span class="fa fa-instagram" aria-hidden="true"></span></a></p>
+          </div>
+          <div class="col-md-4">
+            <h3>Feedback</h3>
+            <p>We welcome your feedback on this website.</p><p>
+          </p></div>
+        </div>
+        <div class="row" id="credit">
+          <div class="col-md-12">
+            <p>Copyrights © 2026. Malaysian Meteorological Department. Jalan Sultan 46667, Petaling Jaya, Selangor. Tel: (603) 79678000 | Fax: (603) 79550964</p>
+          </div>
+        </div>
+      </div>
+      </div>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- script src="https://code.jquery.com/jquery-3.1.1.min.js"></script -->
+    <!-- script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script -->
+    <script src="./Malaysian Meteorological Department Web Service API_files/jquery.min.js.download"></script>
+    <script src="./Malaysian Meteorological Department Web Service API_files/bootstrap.min.js.download" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="./Malaysian Meteorological Department Web Service API_files/ie10-viewport-bug-workaround.js.download"></script>
+    <script src="./Malaysian Meteorological Department Web Service API_files/prism.js.download"></script>
+    <script src="./Malaysian Meteorological Department Web Service API_files/dashboard.js.download"></script>
+  
+
+</body></html>

@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchMetStateLocations, fetchRainsNowcast } from '@/services/metMalaysia';
+import { fetchMetStateLocations, fetchTodayForecast } from '@/services/metMalaysia';
 import { NOWCAST_CACHE_MINUTES, MET_LOCATIONS_CACHE_HOURS } from '@/constants/thresholds';
 import type { Location } from '@/types/config';
-import type { MetLocation, RainsNowcast } from '@/types/metMalaysia';
+import type { MetLocation, MetDailyForecast } from '@/types/metMalaysia';
 
 function resolveStateLocationId(
   stateName: string,
@@ -18,7 +18,7 @@ function resolveStateLocationId(
 }
 
 export function useNowcast(officeLocation: Location | undefined): {
-  nowcast: RainsNowcast | null;
+  forecast: MetDailyForecast | null;
   isLoading: boolean;
   isError: boolean;
 } {
@@ -41,23 +41,21 @@ export function useNowcast(officeLocation: Location | undefined): {
       ? resolveStateLocationId(officeLocation.state, stateLocations)
       : null;
 
-
   const {
-    data: nowcast = null,
-    isLoading: isNowcastLoading,
-    isError: isNowcastError,
+    data: forecast = null,
+    isLoading: isForecastLoading,
+    isError: isForecastError,
   } = useQuery({
-    queryKey: ['met-nowcast', locationId],
-    queryFn: () => fetchRainsNowcast(locationId!),
+    queryKey: ['met-forecast', locationId],
+    queryFn: () => fetchTodayForecast(locationId!),
     staleTime: NOWCAST_CACHE_MINUTES * 60 * 1000,
-    refetchInterval: NOWCAST_CACHE_MINUTES * 60 * 1000,
     retry: false,
     enabled: enabled && !!locationId,
   });
 
   return {
-    nowcast,
-    isLoading: enabled && (isLocationsLoading || isNowcastLoading),
-    isError: enabled && (isLocationsError || isNowcastError),
+    forecast,
+    isLoading: enabled && (isLocationsLoading || isForecastLoading),
+    isError: enabled && (isLocationsError || isForecastError),
   };
 }
