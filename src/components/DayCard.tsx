@@ -1,22 +1,21 @@
-import { ChevronRight, Sunrise, Sunset } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { RiskBadge } from './RiskBadge';
-import { RainBar } from './RainBar';
-import { copy } from '@/constants/copy';
-import { toLocalDateStr } from '@/lib/rainScoring';
-import { cn } from '@/lib/utils';
-import type { ScoredDay } from '@/lib/rainScoring';
+import { ChevronRight, Sunrise, Sunset } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { RiskBadge } from "./RiskBadge";
+import { RainBar } from "./RainBar";
+import { copy } from "@/constants/copy";
+import { toLocalDateStr } from "@/lib/rainScoring";
+import type { ScoredDay } from "@/lib/rainScoring";
 
 const BM_DAY_NAMES: Record<string, string> = {
-  monday: 'Isnin',
-  tuesday: 'Selasa',
-  wednesday: 'Rabu',
-  thursday: 'Khamis',
-  friday: 'Jumaat',
+  monday: "Isnin",
+  tuesday: "Selasa",
+  wednesday: "Rabu",
+  thursday: "Khamis",
+  friday: "Jumaat",
 };
 
 function formatShortDate(date: Date): string {
-  return date.toLocaleDateString('ms-MY', { day: 'numeric', month: 'short' });
+  return date.toLocaleDateString("ms-MY", { day: "numeric", month: "short" });
 }
 
 interface DayCardProps {
@@ -39,7 +38,9 @@ export function DayCard({ day, rainThreshold }: DayCardProps) {
           {/* Day name + badges row */}
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="font-semibold">{BM_DAY_NAMES[day.dayName]}</span>
-            <span className="text-sm text-muted-foreground">{formatShortDate(day.date)}</span>
+            <span className="text-sm text-muted-foreground">
+              {formatShortDate(day.date)}
+            </span>
             {isToday && (
               <span className="inline-flex items-center rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary-foreground">
                 Hari ini
@@ -59,7 +60,9 @@ export function DayCard({ day, rainThreshold }: DayCardProps) {
                 <Sunrise className="size-3 text-amber-500" />
                 {copy.weekly.morning}
               </span>
-              <span className="font-medium tabular-nums">{Math.round(day.morningScore)}%</span>
+              <span className="font-medium tabular-nums">
+                {Math.round(day.morningScore)}%
+              </span>
             </div>
             <RainBar probability={day.morningScore} threshold={rainThreshold} />
           </div>
@@ -71,7 +74,9 @@ export function DayCard({ day, rainThreshold }: DayCardProps) {
                 <Sunset className="size-3 text-indigo-400" />
                 {copy.weekly.evening}
               </span>
-              <span className="font-medium tabular-nums">{Math.round(day.eveningScore)}%</span>
+              <span className="font-medium tabular-nums">
+                {Math.round(day.eveningScore)}%
+              </span>
             </div>
             <RainBar probability={day.eveningScore} threshold={rainThreshold} />
           </div>
@@ -79,7 +84,10 @@ export function DayCard({ day, rainThreshold }: DayCardProps) {
 
         {/* Right: risk badge + chevron */}
         <div className="flex flex-col items-end justify-between self-stretch shrink-0 gap-2">
-          <RiskBadge probability={day.combinedScore} threshold={rainThreshold} />
+          <RiskBadge
+            probability={day.combinedScore}
+            threshold={rainThreshold}
+          />
           <span className="p-1 text-muted-foreground">
             <ChevronRight className="size-4" />
           </span>
