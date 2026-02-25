@@ -1,4 +1,4 @@
-import { RefreshCw } from 'lucide-react';
+import { CalendarDays, RefreshCw } from 'lucide-react';
 import { useDayRecommendation } from '@/hooks/useDayRecommendation';
 import { useLeaveAdvisorVisible } from '@/hooks/useLeaveAdvisorVisible';
 import { useConfig } from '@/hooks/useConfig';
@@ -21,7 +21,10 @@ export function Weekly() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-xl font-bold">{copy.weekly.title}</h1>
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <CalendarDays className="size-5 text-primary" />
+            {copy.weekly.title}
+          </h1>
           {days.length > 0 && (
             <p className="text-xs text-muted-foreground mt-0.5">
               {days[0].date.toLocaleDateString('ms-MY', { day: 'numeric', month: 'long' })}

@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Sunrise, Sunset } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { RiskBadge } from './RiskBadge';
 import { RainBar } from './RainBar';
@@ -55,7 +55,10 @@ export function DayCard({ day, rainThreshold }: DayCardProps) {
           {/* Morning */}
           <div className="space-y-1">
             <div className="flex justify-between text-xs">
-              <span className="text-muted-foreground">{copy.weekly.morning}</span>
+              <span className="text-muted-foreground flex items-center gap-1">
+                <Sunrise className="size-3 text-amber-500" />
+                {copy.weekly.morning}
+              </span>
               <span className="font-medium tabular-nums">{Math.round(day.morningScore)}%</span>
             </div>
             <RainBar probability={day.morningScore} threshold={rainThreshold} />
@@ -64,7 +67,10 @@ export function DayCard({ day, rainThreshold }: DayCardProps) {
           {/* Evening */}
           <div className="space-y-1">
             <div className="flex justify-between text-xs">
-              <span className="text-muted-foreground">{copy.weekly.evening}</span>
+              <span className="text-muted-foreground flex items-center gap-1">
+                <Sunset className="size-3 text-indigo-400" />
+                {copy.weekly.evening}
+              </span>
               <span className="font-medium tabular-nums">{Math.round(day.eveningScore)}%</span>
             </div>
             <RainBar probability={day.eveningScore} threshold={rainThreshold} />

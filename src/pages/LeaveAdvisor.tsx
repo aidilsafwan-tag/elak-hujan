@@ -1,4 +1,4 @@
-import { RefreshCw } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Clock, Cloud, Moon, Navigation, RefreshCw, Sunrise, Sunset, Umbrella } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RainBar } from '@/components/RainBar';
@@ -19,10 +19,19 @@ function conditionStyle(condition: string): string {
   return 'bg-muted/50 border-border text-muted-foreground';
 }
 
+const PERIOD_ICON = {
+  morning: <Sunrise className="size-3" />,
+  afternoon: <Sunset className="size-3" />,
+  night: <Moon className="size-3" />,
+};
+
 function ForecastCell({ period }: { period: ForecastPeriod }) {
   return (
     <div className={cn('rounded-lg border p-2 text-center space-y-1', conditionStyle(period.condition))}>
-      <p className="text-[10px] font-medium opacity-70">{period.label}</p>
+      <p className="text-[10px] font-medium opacity-70 flex items-center justify-center gap-0.5">
+        {PERIOD_ICON[period.period]}
+        {period.label}
+      </p>
       <p className="text-[10px] leading-tight line-clamp-2">{period.condition}</p>
     </div>
   );
@@ -48,7 +57,8 @@ function MetForecastSection({
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <p className="text-sm font-medium text-muted-foreground">
+        <p className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">
+          <Cloud className="size-3.5" />
           {copy.leaveAdvisor.metForecastTitle}
         </p>
         <span className="inline-flex items-center rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
@@ -88,7 +98,7 @@ function SlotRow({
         {Math.round(probability)}%
       </span>
       {isRecommended && (
-        <span className="text-xs font-semibold text-primary shrink-0">←</span>
+        <ArrowLeft className="size-3.5 text-primary shrink-0" />
       )}
     </div>
   );
@@ -119,7 +129,10 @@ export function LeaveAdvisor() {
 
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">{copy.leaveAdvisor.title}</h1>
+        <h1 className="text-xl font-bold flex items-center gap-2">
+          <Navigation className="size-5 text-primary" />
+          {copy.leaveAdvisor.title}
+        </h1>
         <Button size="icon-sm" variant="ghost" onClick={refetch} aria-label={copy.leaveAdvisor.refresh}>
           <RefreshCw className="size-4" />
         </Button>
@@ -160,7 +173,8 @@ export function LeaveAdvisor() {
                 : 'bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/25',
             )}
           >
-            <p className="text-xs font-semibold uppercase tracking-widest text-white/70">
+            <p className="text-xs font-semibold uppercase tracking-widest text-white/70 flex items-center gap-1.5">
+              <Umbrella className="size-3.5" />
               {copy.leaveAdvisor.recommendedSlot}
             </p>
             <p className="text-5xl font-bold tabular-nums tracking-tight text-white">
@@ -171,8 +185,9 @@ export function LeaveAdvisor() {
                 {Math.round(rec.probability)}% hujan
               </span>
               {!rec.hasCleanWindow && (
-                <span className="text-xs text-white/90 font-medium">
-                  ⚠️ {copy.leaveAdvisor.noDryWindow}
+                <span className="text-xs text-white/90 font-medium flex items-center gap-1">
+                  <AlertTriangle className="size-3.5" />
+                  {copy.leaveAdvisor.noDryWindow}
                 </span>
               )}
             </div>
@@ -181,7 +196,8 @@ export function LeaveAdvisor() {
           {/* Scan window slots */}
           {rec.slots.length > 0 && (
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
+              <p className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">
+                <Clock className="size-3.5" />
                 {copy.leaveAdvisor.scanWindowTitle}
               </p>
               <div className="space-y-1.5">
@@ -202,7 +218,8 @@ export function LeaveAdvisor() {
           {rollingSlots.length > 0 &&
             !rec.slots.some((s) => s.hour === currentHour) && (
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
+              <p className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">
+                <Clock className="size-3.5" />
                 {copy.leaveAdvisor.rollingTitle}
               </p>
               <div className="space-y-1.5">
