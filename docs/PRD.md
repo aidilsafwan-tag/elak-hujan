@@ -28,16 +28,15 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 | G2 | Help users decide when to leave the office in the evening |
 | G3 | Be fully configurable per user with no backend or login required |
 | G4 | Be shareable — any friend can open the app and set it up for their own commute |
-| G5 | Deliver timely Telegram notifications as a companion nudge layer |
-| G6 | All UI copy, labels, and notifications in Bahasa Melayu as the primary language |
+| G5 | All UI copy and labels in Bahasa Melayu as the primary language |
 
 ---
 
 ## 4. Non-Goals (v1)
 
-- No user accounts or cloud sync
+- No user accounts or cloud sync (see Section 15 for future plans)
 - No Android/iOS native app
-- No social or sharing features between users
+- No crowdsourced rain reports or community alerts (see Section 15)
 - No paid weather API integrations
 - No traffic or route planning
 
@@ -85,17 +84,7 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
   4. Set evening commute window (e.g. 5:00pm – 6:00pm)
   5. Set number of office days per week (default: 3)
   6. Set preferred days of the week (e.g. Mon, Tue, Wed — flexible)
-  7. (Optional) Connect Telegram bot
 - All settings editable post-onboarding from a Settings page
-
-### 6.5 Telegram Notifications
-> *"As a user, I want a Telegram message on my office day mornings summarising rain risk for my commute, and an afternoon nudge if rain is expected during my ride home."*
-
-- Morning alert: Sent on confirmed office days at a configurable time (e.g. 7:30am)
-  - Summary: Rain risk for morning window + evening window
-- Evening nudge: Sent ~1 hour before the evening commute window on office days
-  - Summary: Best leave time recommendation
-- User connects via a Telegram bot (token stored locally in config)
 
 ---
 
@@ -107,7 +96,7 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 | **Day Detail View** | Hourly rain forecast for a selected day. Commute windows highlighted as bands. |
 | **Leave Now Advisor** | Contextual panel (or dedicated view) showing rolling forecast and recommended leave time. Visible when approaching evening commute window. |
 | **Onboarding Wizard** | Step-by-step first-launch setup flow. |
-| **Settings Page** | Full config editor — locations, commute windows, office day preferences, Telegram setup. |
+| **Settings Page** | Full config editor — locations, commute windows, office day preferences. |
 
 ---
 
@@ -121,7 +110,6 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 | Primary weather API | Open-Meteo (free, no key required) | Hourly precipitation probability, no API key, covers Malaysia |
 | Secondary weather API | data.gov.my Weather API (MET Malaysia) | Official source for active weather warnings only |
 | Location input | Nominatim (OpenStreetMap geocoding) | Free, no API key required |
-| Notifications | Telegram Bot API | User-configured, lightweight push layer |
 | Localisation | Bahasa Melayu (primary) | Local-first product, aligns with MET Malaysia data which is also in BM |
 
 **Note on weather data sources:** data.gov.my provides daily forecasts in morning/afternoon/night buckets (text-based, Bahasa Melayu) — insufficient for hourly commute planning. Open-Meteo is used for all planning and scoring logic. data.gov.my is used exclusively to surface active MET Malaysia weather warnings as a banner/alert in the UI.
@@ -178,37 +166,17 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 | OQ1 | ~~Should weather be fetched for home location, office location, or both?~~ **Resolved: Both.** |
 | OQ2 | ~~What rain probability threshold counts as "risky"?~~ **Resolved: 40% default, user-configurable.** |
 | OQ3 | ~~Should confirmed office days sync to a calendar or remain app-only?~~ **Resolved: App-only.** |
-| OQ4 | ~~Telegram bot architecture?~~ **Resolved: Single bot owned by developer, each user stores their own Chat ID locally. See Section 14.** |
+| OQ4 | ~~Telegram notifications?~~ **Deferred to future work. See Section 15.** |
 
 ---
 
-## 14. Telegram Bot — How It Works
 
-A Telegram bot is essentially a special Telegram account that can send and receive messages programmatically via the Telegram Bot API.
-
-**Setup (one-time, done by you as the developer):**
-1. Message `@BotFather` on Telegram and create a new bot — you'll receive a **Bot Token** (a secret string)
-2. Deploy a minimal backend (or use a serverless function on Vercel) that holds this token and handles sending notifications
-3. Each user who wants notifications must start a chat with your bot on Telegram, which gives them a **Chat ID**
-4. The user enters their Chat ID in the app's settings — this is stored in their localStorage
-
-**How notifications are sent:**
-- The web app calls your serverless function with the user's Chat ID + message
-- The function calls the Telegram Bot API using the bot token to deliver the message
-- The token stays server-side (never exposed in the browser); the Chat ID is the only user-specific piece
-
-**For v1 simplicity:** You create and own one bot. All users (you + friends) use the same bot but each have their own Chat ID. This is the standard pattern and requires no complex infrastructure — a single Vercel serverless function is enough.
-
-**User onboarding flow for Telegram:**
-1. User opens app settings → Telegram section
-2. App shows a link to your bot on Telegram
-3. User clicks, starts the bot, and it responds with their Chat ID
-4. User pastes the Chat ID into the app settings — done
-
----
-
-## 15. Out of Scope for v1 / Future Considerations
+## 15. Out of Scope for v1 / Future Work
 
 - Multi-city or multi-user shared dashboard
 - Historical rain pattern analysis
 - Integration with Google Calendar for office day confirmation
+- **Telegram notifications** — morning summary on confirmed office days (rain risk for both commute windows) and an evening nudge with the best leave time recommendation, delivered via a Vercel serverless function holding the bot token; each user stores only their own Chat ID locally
+- **User accounts & cloud sync** — allow users to sign in and have their config (locations, commute windows, preferences) synced across devices, rather than being tied to a single browser's localStorage
+- **Crowdsourced rain reports** — authenticated users could submit real-time "it's raining here" reports anchored to their coordinates, creating a community-sourced rain layer that complements the NWP model forecast (especially useful for the hyperlocal convective storms that global models miss)
+- **Crowdsourced alerts** — users could push or receive alerts from other riders on the same route or area (e.g. "jalan Ampang banjir sekarang"), building a peer-to-peer hazard layer on top of the forecast data
