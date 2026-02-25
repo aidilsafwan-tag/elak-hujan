@@ -40,11 +40,18 @@ function NowcastCell({ slot }: { slot: NowcastSlot }) {
 function NowcastSection({
   nowcast,
   isLoading,
+  isError,
 }: {
   nowcast: RainsNowcast | null;
   isLoading: boolean;
+  isError: boolean;
 }) {
   if (isLoading) return <Skeleton className="h-[72px] w-full rounded-xl" />;
+  if (isError) return (
+    <p className="text-xs text-muted-foreground/60 text-center py-1">
+      Radar MET tidak tersedia
+    </p>
+  );
   if (!nowcast) return null;
 
   const keySlots = nowcast.slots.filter((s) =>
@@ -103,7 +110,7 @@ function SlotRow({
 export function LeaveAdvisor() {
   const { config } = useConfig();
   const { officeWeather, isLoading, isError, refetch } = useWeather();
-  const { nowcast, isLoading: isNowcastLoading } = useNowcast(config?.officeLocation);
+  const { nowcast, isLoading: isNowcastLoading, isError: isNowcastError } = useNowcast(config?.officeLocation);
 
   if (!config) return null;
 
@@ -152,6 +159,9 @@ export function LeaveAdvisor() {
         <p className="text-sm text-muted-foreground">{copy.leaveAdvisor.noOfficeWeather}</p>
       )}
 
+      {/* MET radar nowcast — loads independently of Open-Meteo */}
+      <NowcastSection nowcast={nowcast} isLoading={isNowcastLoading} isError={isNowcastError} />
+
       {!isLoading && !isError && rec && (
         <>
           {/* Recommendation card */}
@@ -180,9 +190,6 @@ export function LeaveAdvisor() {
               )}
             </div>
           </div>
-
-          {/* MET radar nowcast (0–120 min) */}
-          <NowcastSection nowcast={nowcast} isLoading={isNowcastLoading} />
 
           {/* Scan window slots */}
           {rec.slots.length > 0 && (

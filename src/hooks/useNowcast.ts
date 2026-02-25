@@ -10,20 +10,25 @@ function resolveStateLocationId(
 ): string | null {
   const lower = stateName.toLowerCase();
   const match = locations.find((loc) => {
-    const name = loc.locationname?.toLowerCase();
+    const name = loc.name?.toLowerCase();
     if (!name) return false;
     return name.includes(lower) || lower.includes(name);
   });
-  return match?.id ?? null;
+  return match?.id ?? match?.locationid ?? null;
 }
 
 export function useNowcast(officeLocation: Location | undefined): {
   nowcast: RainsNowcast | null;
   isLoading: boolean;
+  isError: boolean;
 } {
   const enabled = !!officeLocation;
 
-  const { data: stateLocations = [] } = useQuery({
+  const {
+    data: stateLocations = [],
+    isLoading: isLocationsLoading,
+    isError: isLocationsError,
+  } = useQuery({
     queryKey: ['met-state-locations'],
     queryFn: fetchMetStateLocations,
     staleTime: MET_LOCATIONS_CACHE_HOURS * 60 * 60 * 1000,
@@ -36,7 +41,12 @@ export function useNowcast(officeLocation: Location | undefined): {
       ? resolveStateLocationId(officeLocation.state, stateLocations)
       : null;
 
-  const { data: nowcast = null, isLoading } = useQuery({
+
+  const {
+    data: nowcast = null,
+    isLoading: isNowcastLoading,
+    isError: isNowcastError,
+  } = useQuery({
     queryKey: ['met-nowcast', locationId],
     queryFn: () => fetchRainsNowcast(locationId!),
     staleTime: NOWCAST_CACHE_MINUTES * 60 * 1000,
@@ -45,5 +55,9 @@ export function useNowcast(officeLocation: Location | undefined): {
     enabled: enabled && !!locationId,
   });
 
-  return { nowcast, isLoading: enabled && isLoading };
+  return {
+    nowcast,
+    isLoading: enabled && (isLocationsLoading || isNowcastLoading),
+    isError: enabled && (isLocationsError || isNowcastError),
+  };
 }
