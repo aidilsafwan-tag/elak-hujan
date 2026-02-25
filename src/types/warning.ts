@@ -1,17 +1,15 @@
 export interface WeatherWarning {
-  title_en: string;
-  title_ms?: string;
+  heading_en: string;
+  heading_bm?: string;
   text_en?: string;
-  text_ms?: string;
-  // State may be a string, array, or absent (= nationwide)
-  state?: string | string[];
+  text_bm?: string;
+  valid_from?: string;
+  valid_to?: string;
   warning_issue?: {
     issued?: string;
-    valid_from?: string;
-    valid_to?: string;
+    title_en?: string;
+    title_bm?: string;
   };
 }
 
-export interface WarningsResponse {
-  data: WeatherWarning[];
-}
+export type WarningsResponse = WeatherWarning[];

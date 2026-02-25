@@ -21,7 +21,7 @@ function addDismissed(id: string): void {
 }
 
 function warningId(w: WeatherWarning): string {
-  return `${w.title_en ?? 'warning'}-${w.warning_issue?.issued ?? ''}`;
+  return `${w.heading_en}-${w.warning_issue?.issued ?? ''}`;
 }
 
 export function WarningAlert() {
@@ -47,7 +47,7 @@ export function WarningAlert() {
           <AlertTriangle className="size-4 text-amber-600 shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-amber-800 leading-snug">
-              {w.title_en ?? 'Weather Warning'}
+              {w.heading_en}
             </p>
             {w.text_en && (
               <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">{w.text_en}</p>

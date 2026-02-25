@@ -2,9 +2,11 @@ import { CalendarDays, RefreshCw } from 'lucide-react';
 import { useDayRecommendation } from '@/hooks/useDayRecommendation';
 import { useLeaveAdvisorVisible } from '@/hooks/useLeaveAdvisorVisible';
 import { useConfig } from '@/hooks/useConfig';
+import { useNowcast } from '@/hooks/useNowcast';
 import { DayCard } from '@/components/DayCard';
 import { LeavePanel } from '@/components/LeavePanel';
 import { WarningAlert } from '@/components/WarningAlert';
+import { MetForecastSection } from '@/components/MetForecastSection';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { copy } from '@/constants/copy';
@@ -13,6 +15,7 @@ export function Weekly() {
   const { config } = useConfig();
   const { days, isLoading, isError, isFetching, refetch } = useDayRecommendation();
   const showLeavePanel = useLeaveAdvisorVisible();
+  const { forecast, isLoading: isForecastLoading, isError: isForecastError } = useNowcast(config?.officeLocation);
 
   if (!config) return null;
 
@@ -42,6 +45,9 @@ export function Weekly() {
 
       {/* MET Malaysia warning banner */}
       <WarningAlert />
+
+      {/* MET official daily forecast */}
+      <MetForecastSection forecast={forecast} isLoading={isForecastLoading} isError={isForecastError} />
 
       {/* Leave panel — auto-surfaces 2h before evening window */}
       {showLeavePanel && !isLoading && !isError && <LeavePanel />}
