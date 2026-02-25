@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Clock, CalendarCheck, Droplets, AlertTriangle, Check } from 'lucide-react';
+import { MapPin, Clock, CalendarCheck, Droplets, AlertTriangle, Check, Info } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -219,6 +219,38 @@ export function Settings() {
         <Button variant="destructive" className="w-full" onClick={handleReset}>
           {copy.settings.resetButton}
         </Button>
+      </SectionCard>
+
+      {/* About */}
+      <SectionCard icon={Info} title={copy.about.sectionTitle}>
+        <div className="space-y-1.5">
+          <p className="text-xs font-medium text-muted-foreground">{copy.about.dataSourcesLabel}</p>
+          <ul className="space-y-1">
+            {copy.about.sources.map((s) => (
+              <li key={s.name} className="text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">{s.name}</span>
+                {' — '}
+                {s.desc}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="space-y-1.5">
+          <p className="text-xs font-medium text-muted-foreground">{copy.about.accuracyLabel}</p>
+          <ul className="space-y-2">
+            {copy.about.accuracyNotes.map((note, i) => (
+              <li key={i} className="text-xs text-muted-foreground leading-relaxed flex gap-2">
+                <span className="text-muted-foreground/50 shrink-0">•</span>
+                {note}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <p className="text-xs text-muted-foreground border-t pt-3">{copy.about.disclaimer}</p>
+        <p className="text-xs text-muted-foreground/60 italic">{copy.about.tagline}</p>
+        <p className="text-xs text-muted-foreground/60 italic">{copy.about.credit}</p>
       </SectionCard>
     </div>
   );

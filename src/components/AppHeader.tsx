@@ -43,10 +43,7 @@ export function AppHeader() {
             <span className="text-foreground">Elak</span>
             <span className="text-primary">Hujan</span>
           </p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">
-            Perancang hujan untuk rider{" "}
-            <p className="italic">(kita merancang, tuhan menentukan :p)</p>
-          </p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">Perancang hujan untuk rider</p>
         </div>
       </div>
     </header>

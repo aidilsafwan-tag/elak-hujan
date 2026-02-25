@@ -70,6 +70,27 @@ export const copy = {
       "Ini akan memadam semua tetapan anda dan kembali ke skrin persediaan. Teruskan?",
   },
 
+  about: {
+    sectionTitle: "Tentang",
+    dataSourcesLabel: "Sumber Data",
+    sources: [
+      { name: "Open-Meteo", desc: "Ramalan cuaca jam-per-jam (open-meteo.com)" },
+      { name: "MET Malaysia / data.gov.my", desc: "Amaran cuaca rasmi" },
+      { name: "OpenStreetMap Nominatim", desc: "Carian & koordinat lokasi" },
+    ],
+    accuracyLabel: "Ketepatan & Had",
+    accuracyNotes: [
+      "Ramalan cuaca menggunakan koordinat tepat lokasi rumah dan pejabat — bukan peringkat negeri.",
+      "Open-Meteo menggunakan model global ECMWF IFS (~27 km grid) untuk Malaysia. Model resolusi tinggi 1–2 km hanya tersedia untuk Eropah dan Amerika Syarikat.",
+      "Hujan konvektif petang (ribut petir tempatan) sukar diramal oleh mana-mana model NWP, termasuk model profesional seperti ECMWF — sistem ini terbentuk dan hilang dalam masa 1–2 jam.",
+      "Nilai yang dipaparkan ialah kebarangkalian hujan (%), bukan jumlah hujan sebenar (mm). Nilai 40% bermaksud model menjangka peluang 40% hujan berlaku — bukan intensiti.",
+      "Amaran MET Malaysia adalah pada peringkat negeri sahaja.",
+    ],
+    disclaimer: "Gunakan sebagai panduan perancangan sahaja. Semak ramalan terkini sebelum bertolak.",
+    tagline: "kita merancang, tuhan menentukan :p",
+    credit: "vibe-coded by aidil safwan",
+  },
+
   errors: {
     weatherFetch: "Gagal mendapatkan data cuaca. Cuba lagi.",
     locationSearch: "Gagal mencari lokasi. Cuba lagi.",
