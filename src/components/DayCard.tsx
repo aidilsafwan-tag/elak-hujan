@@ -2,7 +2,6 @@ import { ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { RiskBadge } from './RiskBadge';
 import { RainBar } from './RainBar';
-import { useConfig } from '@/hooks/useConfig';
 import { copy } from '@/constants/copy';
 import { toLocalDateStr } from '@/lib/rainScoring';
 import { cn } from '@/lib/utils';
@@ -26,36 +25,13 @@ interface DayCardProps {
 }
 
 export function DayCard({ day, rainThreshold }: DayCardProps) {
-  const { config, updateConfig } = useConfig();
   const navigate = useNavigate();
-
-  const isConfirmed = config?.confirmedOfficeDays[day.dateStr] ?? false;
   const isToday = day.dateStr === toLocalDateStr(new Date());
-
-  function handleTap() {
-    if (!config) return;
-    updateConfig({
-      confirmedOfficeDays: {
-        ...config.confirmedOfficeDays,
-        [day.dateStr]: !isConfirmed,
-      },
-    });
-  }
-
-  function handleChevron(e: React.MouseEvent) {
-    e.stopPropagation();
-    navigate(`/day/${day.dateStr}`);
-  }
 
   return (
     <div
-      className={cn(
-        'rounded-xl border p-4 cursor-pointer select-none transition-all duration-200 active:scale-[0.98]',
-        isConfirmed
-          ? 'bg-primary/8 border-primary/40 border-l-4 border-l-primary shadow-sm'
-          : 'bg-card border-border hover:bg-accent/50 hover:shadow-sm',
-      )}
-      onClick={handleTap}
+      className="rounded-xl border bg-card border-border hover:bg-accent/50 hover:shadow-sm p-4 cursor-pointer select-none transition-all duration-200 active:scale-[0.98]"
+      onClick={() => navigate(`/day/${day.dateStr}`)}
     >
       <div className="flex items-start gap-3">
         {/* Left: all day info */}
@@ -72,11 +48,6 @@ export function DayCard({ day, rainThreshold }: DayCardProps) {
             {day.isRecommended && (
               <span className="rounded-full bg-sky-100 border border-sky-200 text-sky-700 px-2 py-0.5 text-xs font-medium">
                 {copy.weekly.recommended}
-              </span>
-            )}
-            {isConfirmed && (
-              <span className="rounded-full bg-primary text-primary-foreground px-2 py-0.5 text-xs font-semibold">
-                ✓ {copy.weekly.officeDay}
               </span>
             )}
           </div>
@@ -103,14 +74,9 @@ export function DayCard({ day, rainThreshold }: DayCardProps) {
         {/* Right: risk badge + chevron */}
         <div className="flex flex-col items-end justify-between self-stretch shrink-0 gap-2">
           <RiskBadge probability={day.combinedScore} threshold={rainThreshold} />
-          <button
-            type="button"
-            className="p-1 rounded text-muted-foreground hover:text-foreground transition-colors"
-            onClick={handleChevron}
-            aria-label="Lihat butiran hari"
-          >
+          <span className="p-1 text-muted-foreground">
             <ChevronRight className="size-4" />
-          </button>
+          </span>
         </div>
       </div>
     </div>

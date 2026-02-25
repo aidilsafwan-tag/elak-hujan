@@ -10,5 +10,6 @@ export const RISK_LEVELS = {
 
 export const WEATHER_CACHE_MINUTES = 60;
 export const WARNINGS_CACHE_MINUTES = 30;
+export const NOWCAST_CACHE_MINUTES = 5;
+export const MET_LOCATIONS_CACHE_HOURS = 24;
 export const LEAVE_ADVISOR_LEAD_HOURS = 2;
-export const CONFIRMED_DAYS_TTL_DAYS = 30;

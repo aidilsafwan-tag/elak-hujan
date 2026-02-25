@@ -84,7 +84,6 @@ export function Onboarding() {
       eveningWindow: draft.eveningWindow!,
       officeDaysPerWeek: draft.officeDaysPerWeek!,
       preferredDays: draft.preferredDays!,
-      confirmedOfficeDays: {},
       rainThreshold: draft.rainThreshold ?? 40,
       onboardingComplete: true,
       configVersion: 1,

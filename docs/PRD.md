@@ -1,6 +1,6 @@
 # PRD – ElakHujan
 ### Perancang Hujan untuk Rider
-**Version:** 0.1 (Draft)
+**Version:** 0.2
 **Author:** Aidil Safwan
 **Last Updated:** February 2026
 
@@ -8,7 +8,7 @@
 
 ## 1. Overview
 
-ScootWeather is a mobile-first React web app that helps scooter commuters in Malaysia plan their office days and commute timing around rain. It combines a weekly planning view with a daily leave-time advisor, personalised through a local configuration setup. The app is designed to be stateless on the server — all user preferences are stored in the browser's localStorage, making it instantly shareable with friends without requiring accounts or a backend.
+ElakHujan is a mobile-first React web app that helps scooter commuters in Malaysia plan their office days and commute timing around rain. It combines a weekly planning view with a daily leave-time advisor, personalised through a local configuration setup. All user preferences are stored in the browser's localStorage. A thin Vercel Edge Function proxy is used to forward MET Malaysia API requests server-side (to avoid CORS and keep the API token out of the browser), but no user data ever touches the server.
 
 ---
 
@@ -37,7 +37,7 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 - No user accounts or cloud sync (see Section 15 for future plans)
 - No Android/iOS native app
 - No crowdsourced rain reports or community alerts (see Section 15)
-- No paid weather API integrations
+- No paid weather API integrations (MET Malaysia API is free with registration)
 - No traffic or route planning
 
 ---
@@ -58,7 +58,7 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 - Show the next 5 weekdays from today (rolling window, not fixed Mon–Fri calendar week) — this aligns exactly with Open-Meteo's 7-day forecast window
 - For each day, display rain probability during the configured morning commute window and evening commute window
 - Highlight the recommended N days (default: 3) with the lowest combined rain risk, drawn **only from the user's `preferredDays`** — non-preferred days are shown but never highlighted as recommended unless there are fewer than N preferred days available in the window
-- Tapping a day card toggles its confirmed office day status (single tap); a chevron button navigates to the Day Detail view
+- Tapping anywhere on a day card navigates to the Day Detail view
 
 ### 6.2 Daily Evening Check-in
 > *"As a user, on each evening before an office day, I want to quickly verify whether tomorrow's forecast has changed."*
@@ -73,6 +73,7 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 - Shows a rolling hourly rain forecast from the current time through the next 3 hours
 - Highlights the recommended leave window (lowest rain probability slot)
 - Uses the **office location** as the weather reference point
+- Displays a **MET Malaysia radar nowcast** section showing current rain status and near-term outlook at 30-minute intervals up to 120 minutes ahead, sourced from the official MET radar observation data (supplementary to the Open-Meteo hourly forecast)
 
 ### 6.4 Onboarding & Settings
 > *"As a new user, I want a guided setup so I can configure my commute details before using the app."*
@@ -92,9 +93,9 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 
 | Screen | Description |
 |--------|-------------|
-| **Weekly View** | Mon–Fri cards showing morning + evening rain risk. Recommended days highlighted. User can tap to confirm office days. |
+| **Weekly View** | Rolling 5-weekday cards showing morning + evening rain risk. Recommended days highlighted. Tapping a card navigates to Day Detail. |
 | **Day Detail View** | Hourly rain forecast for a selected day. Commute windows highlighted as bands. |
-| **Leave Now Advisor** | Contextual panel (or dedicated view) showing rolling forecast and recommended leave time. Visible when approaching evening commute window. |
+| **Leave Now Advisor** | Contextual panel (or dedicated view) showing rolling forecast, recommended leave time, and MET radar nowcast (0–120 min). Visible when approaching evening commute window. |
 | **Onboarding Wizard** | Step-by-step first-launch setup flow. |
 | **Settings Page** | Full config editor — locations, commute windows, office day preferences. |
 
@@ -108,11 +109,13 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 | Styling | Tailwind CSS + shadcn/ui | Clean, minimal, component-ready |
 | State / Storage | localStorage | No backend needed, shareable by design |
 | Primary weather API | Open-Meteo (free, no key required) | Hourly precipitation probability, no API key, covers Malaysia |
-| Secondary weather API | data.gov.my Weather API (MET Malaysia) | Official source for active weather warnings only |
+| Radar nowcast API | MET Malaysia API — api.met.gov.my (free with registration) | Official radar-based nowcast (0–120 min at 10-min intervals); proxied via Vercel Edge Function to avoid CORS and keep token server-side |
+| Warnings API | data.gov.my Weather API | Official source for active weather warnings, displayed as dismissible banner |
+| API proxy | Vercel Edge Function (`api/met/[...path].ts`) | Forwards MET API calls server-side; `MET_TOKEN` never reaches the browser |
 | Location input | Nominatim (OpenStreetMap geocoding) | Free, no API key required |
 | Localisation | Bahasa Melayu (primary) | Local-first product, aligns with MET Malaysia data which is also in BM |
 
-**Note on weather data sources:** data.gov.my provides daily forecasts in morning/afternoon/night buckets (text-based, Bahasa Melayu) — insufficient for hourly commute planning. Open-Meteo is used for all planning and scoring logic. data.gov.my is used exclusively to surface active MET Malaysia weather warnings as a banner/alert in the UI.
+**Note on weather data sources:** Open-Meteo is used for all multi-day planning and scoring logic (hourly precipitation probability, 7-day forecast). MET Malaysia API provides radar-derived nowcast data for near-term conditions in the Leave Advisor. data.gov.my is used exclusively to surface active MET Malaysia weather warnings as a banner/alert in the UI.
 
 ---
 
@@ -123,7 +126,13 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 - Two separate API calls — one for home location, one for office location
 - Refresh strategy: fetch on app open, cache for 30–60 minutes
 
-**data.gov.my (secondary — warnings only):**
+**MET Malaysia API — api.met.gov.my (radar nowcast):**
+- Fetch `OBSERVATION / RAINS` datatypes (`RAINS`, `RAINS10m` … `RAINS120m`) for the user's office state location
+- Called via Vercel Edge Function proxy; token stored as server-side env var `MET_TOKEN`
+- Refresh every 5 minutes while LeaveAdvisor is open; state location list cached 24 hours
+- Displayed as a supplementary "Radar Sekarang" section in the LeaveAdvisor view
+
+**data.gov.my (warnings only):**
 - Poll `/weather/warning` on app open
 - Filter for warnings relevant to user's configured district/state
 - Display as a dismissible alert banner if active warnings exist
@@ -144,10 +153,11 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 - N = `officeDaysPerWeek` from config
 
 **Leave time recommendation:**
-- Fetch hourly rain probability from the office location
+- Fetch hourly rain probability from the office location (Open-Meteo)
 - Scan from 1 hour before evening window start through 2 hours after
 - Recommend the earliest 1-hour slot where rain probability stays below 40%
 - If no dry window exists, surface the least-bad slot with a warning message
+- Supplement with MET radar nowcast showing actual rain intensity at 0 / +30 / +60 / +90 / +120 min (binary Kering/Hujan display, calibration TBD once real data values are observed)
 
 ---
 
@@ -165,7 +175,7 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 |---|----------|
 | OQ1 | ~~Should weather be fetched for home location, office location, or both?~~ **Resolved: Both.** |
 | OQ2 | ~~What rain probability threshold counts as "risky"?~~ **Resolved: 40% default, user-configurable.** |
-| OQ3 | ~~Should confirmed office days sync to a calendar or remain app-only?~~ **Resolved: App-only.** |
+| OQ3 | ~~Should confirmed office days sync to a calendar or remain app-only?~~ **Superseded: confirmed office day feature removed. DayCard taps now navigate directly to Day Detail.** |
 | OQ4 | ~~Telegram notifications?~~ **Deferred to future work. See Section 15.** |
 
 ---

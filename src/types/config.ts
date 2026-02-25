@@ -17,7 +17,6 @@ export interface UserConfig {
   eveningWindow: TimeWindow;
   officeDaysPerWeek: number;
   preferredDays: string[]; // ["monday", "tuesday", ...]
-  confirmedOfficeDays: Record<string, boolean>; // { "2026-02-23": true }
   rainThreshold: number;
   onboardingComplete: boolean;
   configVersion: number;

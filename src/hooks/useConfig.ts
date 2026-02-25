@@ -1,9 +1,5 @@
 import { create } from 'zustand';
-import {
-  getConfig,
-  setConfig as saveToStorage,
-  pruneOldConfirmedDays,
-} from '@/lib/localStorage';
+import { getConfig, setConfig as saveToStorage } from '@/lib/localStorage';
 import type { UserConfig } from '@/types/config';
 
 interface ConfigStore {
@@ -12,20 +8,8 @@ interface ConfigStore {
   updateConfig: (partial: Partial<UserConfig>) => void;
 }
 
-function loadInitialConfig(): UserConfig | null {
-  const stored = getConfig();
-  if (!stored) return null;
-  const pruned = pruneOldConfirmedDays(stored.confirmedOfficeDays);
-  if (Object.keys(pruned).length !== Object.keys(stored.confirmedOfficeDays).length) {
-    const updated = { ...stored, confirmedOfficeDays: pruned };
-    saveToStorage(updated);
-    return updated;
-  }
-  return stored;
-}
-
 export const useConfig = create<ConfigStore>((set) => ({
-  config: loadInitialConfig(),
+  config: getConfig(),
 
   setConfig: (config) => {
     saveToStorage(config);
