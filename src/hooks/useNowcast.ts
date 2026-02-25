@@ -9,11 +9,11 @@ function resolveStateLocationId(
   locations: MetLocation[],
 ): string | null {
   const lower = stateName.toLowerCase();
-  const match = locations.find(
-    (loc) =>
-      loc.locationname.toLowerCase().includes(lower) ||
-      lower.includes(loc.locationname.toLowerCase()),
-  );
+  const match = locations.find((loc) => {
+    const name = loc.locationname?.toLowerCase();
+    if (!name) return false;
+    return name.includes(lower) || lower.includes(name);
+  });
   return match?.id ?? null;
 }
 
