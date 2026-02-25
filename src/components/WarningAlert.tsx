@@ -49,12 +49,12 @@ export function WarningAlert() {
       <div className="flex items-start gap-2.5 p-3">
         <AlertTriangle className="size-4 text-amber-600 shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-amber-800 leading-snug">{first.heading_en}</p>
-          {first.text_en && !expanded && (
-            <p className="text-xs text-amber-700 mt-0.5 leading-relaxed line-clamp-2">{first.text_en}</p>
+          <p className="text-xs font-semibold text-amber-800 leading-snug">{first.heading_bm ?? first.heading_en}</p>
+          {(first.text_bm ?? first.text_en) && !expanded && (
+            <p className="text-xs text-amber-700 mt-0.5 leading-relaxed line-clamp-2">{first.text_bm ?? first.text_en}</p>
           )}
-          {first.text_en && expanded && (
-            <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">{first.text_en}</p>
+          {(first.text_bm ?? first.text_en) && expanded && (
+            <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">{first.text_bm ?? first.text_en}</p>
           )}
         </div>
         <div className="flex items-center gap-1 shrink-0">
@@ -87,9 +87,9 @@ export function WarningAlert() {
             <div key={i} className="px-3 py-2.5 flex gap-2">
               <AlertTriangle className="size-3.5 text-amber-500 shrink-0 mt-0.5" />
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-amber-800 leading-snug">{w.heading_en}</p>
-                {w.text_en && (
-                  <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">{w.text_en}</p>
+                <p className="text-xs font-semibold text-amber-800 leading-snug">{w.heading_bm ?? w.heading_en}</p>
+                {(w.text_bm ?? w.text_en) && (
+                  <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">{w.text_bm ?? w.text_en}</p>
                 )}
               </div>
             </div>
