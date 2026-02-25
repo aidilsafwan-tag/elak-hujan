@@ -1,6 +1,6 @@
 # PRD – ElakHujan
 ### Perancang Hujan untuk Rider
-**Version:** 0.2
+**Version:** 0.3
 **Author:** Aidil Safwan
 **Last Updated:** February 2026
 
@@ -73,7 +73,7 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 - Shows a rolling hourly rain forecast from the current time through the next 3 hours
 - Highlights the recommended leave window (lowest rain probability slot)
 - Uses the **office location** as the weather reference point
-- Displays a **MET Malaysia radar nowcast** section showing current rain status and near-term outlook at 30-minute intervals up to 120 minutes ahead, sourced from the official MET radar observation data (supplementary to the Open-Meteo hourly forecast)
+- Displays a **MET Malaysia official daily forecast** section (Pagi / Petang / Malam) sourced from the `FORECAST/GENERAL` dataset (`FGM`/`FGA`/`FGN` datatypes), showing today's qualitative weather conditions per period as published by MET Malaysia — supplementary to the Open-Meteo hourly probability forecast
 
 ### 6.4 Onboarding & Settings
 > *"As a new user, I want a guided setup so I can configure my commute details before using the app."*
@@ -95,7 +95,7 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 |--------|-------------|
 | **Weekly View** | Rolling 5-weekday cards showing morning + evening rain risk. Recommended days highlighted. Tapping a card navigates to Day Detail. |
 | **Day Detail View** | Hourly rain forecast for a selected day. Commute windows highlighted as bands. |
-| **Leave Now Advisor** | Contextual panel (or dedicated view) showing rolling forecast, recommended leave time, and MET radar nowcast (0–120 min). Visible when approaching evening commute window. |
+| **Leave Now Advisor** | Contextual panel (or dedicated view) showing rolling forecast, recommended leave time, and MET official daily forecast (Pagi/Petang/Malam). Visible when approaching evening commute window. |
 | **Onboarding Wizard** | Step-by-step first-launch setup flow. |
 | **Settings Page** | Full config editor — locations, commute windows, office day preferences. |
 
@@ -109,13 +109,13 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 | Styling | Tailwind CSS + shadcn/ui | Clean, minimal, component-ready |
 | State / Storage | localStorage | No backend needed, shareable by design |
 | Primary weather API | Open-Meteo (free, no key required) | Hourly precipitation probability, no API key, covers Malaysia |
-| Radar nowcast API | MET Malaysia API — api.met.gov.my (free with registration) | Official radar-based nowcast (0–120 min at 10-min intervals); proxied via Vercel Edge Function to avoid CORS and keep token server-side |
+| Daily forecast API | MET Malaysia API — api.met.gov.my (free with registration) | Official daily forecast (`FORECAST/GENERAL`, datatypes `FGM`/`FGA`/`FGN`); proxied via Vercel Edge Function to avoid CORS and keep token server-side |
 | Warnings API | data.gov.my Weather API | Official source for active weather warnings, displayed as dismissible banner |
 | API proxy | Vercel Edge Function (`api/met/[...path].ts`) | Forwards MET API calls server-side; `MET_TOKEN` never reaches the browser |
 | Location input | Nominatim (OpenStreetMap geocoding) | Free, no API key required |
 | Localisation | Bahasa Melayu (primary) | Local-first product, aligns with MET Malaysia data which is also in BM |
 
-**Note on weather data sources:** Open-Meteo is used for all multi-day planning and scoring logic (hourly precipitation probability, 7-day forecast). MET Malaysia API provides radar-derived nowcast data for near-term conditions in the Leave Advisor. data.gov.my is used exclusively to surface active MET Malaysia weather warnings as a banner/alert in the UI.
+**Note on weather data sources:** Open-Meteo is used for all multi-day planning and scoring logic (hourly precipitation probability, 7-day forecast). MET Malaysia API (`FORECAST/GENERAL`) provides today's official qualitative forecast (Pagi/Petang/Malam) as a supplementary section in the Leave Advisor. The `OBSERVATION/RAINS` (radar nowcast) datatypes require elevated API access not included in the default MET Malaysia registration and are not used. data.gov.my is used exclusively to surface active MET Malaysia weather warnings as a banner/alert in the UI.
 
 ---
 
@@ -126,11 +126,12 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 - Two separate API calls — one for home location, one for office location
 - Refresh strategy: fetch on app open, cache for 30–60 minutes
 
-**MET Malaysia API — api.met.gov.my (radar nowcast):**
-- Fetch `OBSERVATION / RAINS` datatypes (`RAINS`, `RAINS10m` … `RAINS120m`) for the user's office state location
+**MET Malaysia API — api.met.gov.my (daily forecast):**
+- Fetch `FORECAST / GENERAL` datatypes (`FGM` morning, `FGA` afternoon, `FGN` night) for the user's office state location
 - Called via Vercel Edge Function proxy; token stored as server-side env var `MET_TOKEN`
-- Refresh every 5 minutes while LeaveAdvisor is open; state location list cached 24 hours
-- Displayed as a supplementary "Radar Sekarang" section in the LeaveAdvisor view
+- State location list (`/locations?locationcategoryid=STATE`) cached 24 hours; today's forecast cached 5 minutes
+- Displayed as a supplementary "Ramalan MET Hari Ini" section in the LeaveAdvisor view
+- **Note:** `OBSERVATION / RAINS` radar nowcast datatypes require elevated API access beyond default registration; not implemented
 
 **data.gov.my (warnings only):**
 - Poll `/weather/warning` on app open
@@ -157,7 +158,7 @@ Malaysian tropical weather is unpredictable and makes scooter commuting uncomfor
 - Scan from 1 hour before evening window start through 2 hours after
 - Recommend the earliest 1-hour slot where rain probability stays below 40%
 - If no dry window exists, surface the least-bad slot with a warning message
-- Supplement with MET radar nowcast showing actual rain intensity at 0 / +30 / +60 / +90 / +120 min (binary Kering/Hujan display, calibration TBD once real data values are observed)
+- Supplement with MET official daily forecast showing today's conditions per period (Pagi/Petang/Malam) as qualitative labels (e.g. "Hujan", "Cerah Beriawan", "Ribut Petir") colour-coded by severity
 
 ---
 
