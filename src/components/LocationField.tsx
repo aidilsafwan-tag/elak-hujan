@@ -77,6 +77,8 @@ export function LocationField({ label, placeholder, value, onChange }: LocationF
   const [showDropdown, setShowDropdown] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  // Only search after the user has actually typed something
+  const dirtyRef = useRef(false);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -90,7 +92,7 @@ export function LocationField({ label, placeholder, value, onChange }: LocationF
   }, []);
 
   useEffect(() => {
-    if (query.length < 3) {
+    if (!dirtyRef.current || query.length < 3) {
       setResults([]);
       setShowDropdown(false);
       return;
@@ -147,6 +149,7 @@ export function LocationField({ label, placeholder, value, onChange }: LocationF
         <Input
           value={query}
           onChange={(e) => {
+            dirtyRef.current = true;
             setQuery(e.target.value);
             if (!e.target.value) {
               setShowDropdown(false);
